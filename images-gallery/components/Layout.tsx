@@ -1,32 +1,37 @@
-import React from "react";
+import React, { ReactNode } from "react";
 
-const Layout = ({ children, title, description}) => {
-    return(
-        <div>
-            <nav>
-                <p>Hola</p>
-                <p>Hola</p>
-                <p>Hola</p>
-            </nav>
-
-            <main>{children}</main>
-
-            <footer>
-                <p>Hola</p>
-                <p>Hola</p>
-                <p>Hola</p>
-
-                <p>Hola</p>
-                <p>Hola</p>
-                <p>Hola</p>
-
-                <p>Hola</p>
-                <p>Hola</p>
-                <p>Hola</p>
-            </footer>
-        </div>
-    )
+interface LayoutProps {
+  children: ReactNode;
+  title: string;
+  description: string;
 }
 
-export default Layout;
+const Layout: React.FC<LayoutProps> = ({ children, title, description }) => {
+  return (
+    <div>
+      <nav>
+        <p>Hola</p>
+        <p>Hola</p>
+        <p>Hola</p>
+      </nav>
 
+      <main>{children}</main>
+
+      <footer>
+        <p>Hola</p>
+        <p>Hola</p>
+        <p>Hola</p>
+
+        <p>Hola</p>
+        <p>Hola</p>
+        <p>Hola</p>
+
+        <p>Hola</p>
+        <p>Hola</p>
+        <p>Hola</p>
+      </footer>
+    </div>
+  );
+};
+
+export default Layout;
