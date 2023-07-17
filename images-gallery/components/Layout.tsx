@@ -1,15 +1,21 @@
-import React, { ReactNode } from "react";
+import React from "react";
+import NextHead from "next/head";
 
 interface LayoutProps {
-  children: ReactNode;
+  children: React.ReactNode;
   title: string;
   description: string;
 }
 
-const Layout: React.FC<LayoutProps> = ({ children, title, description }) => {
+const Layout = ({children , title, description}: LayoutProps) => {
   return (
     <div>
-      <nav>
+      <NextHead>
+        <title>{title}</title>
+        <meta name="description" content={description}/>
+      </NextHead>
+
+      <nav className="w-full flex flex-row justify-around ">
         <p>Hola</p>
         <p>Hola</p>
         <p>Hola</p>
@@ -17,7 +23,7 @@ const Layout: React.FC<LayoutProps> = ({ children, title, description }) => {
 
       <main>{children}</main>
 
-      <footer>
+      <footer className="w-full flex flex-row justify-around">
         <p>Hola</p>
         <p>Hola</p>
         <p>Hola</p>

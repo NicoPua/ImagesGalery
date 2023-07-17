@@ -25,3 +25,12 @@ body {
     )
     rgb(var(--background-start-rgb));
 }
+
+main{
+  padding-top: 1rem;
+  min-height: 100vh;
+}
+
+nav{
+  position: fixed;
+}
