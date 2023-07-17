@@ -1,5 +1,6 @@
 import React from "react";
 import NextHead from "next/head";
+import FooterBar from "./FooterBar";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -23,19 +24,7 @@ const Layout = ({children , title, description}: LayoutProps) => {
 
       <main>{children}</main>
 
-      <footer className="w-full flex flex-row justify-around">
-        <p>Hola</p>
-        <p>Hola</p>
-        <p>Hola</p>
-
-        <p>Hola</p>
-        <p>Hola</p>
-        <p>Hola</p>
-
-        <p>Hola</p>
-        <p>Hola</p>
-        <p>Hola</p>
-      </footer>
+      <FooterBar />
     </div>
   );
 };
