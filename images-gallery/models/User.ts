@@ -32,7 +32,7 @@ var userSchema = new Schema(
         },
         deleted: { 
             type: Boolean,
-            default: false
+            default: true
         }
     },
     { timestamps: false, versionKey: false }
