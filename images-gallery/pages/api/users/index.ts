@@ -48,7 +48,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     case 'POST':
       try {
-        let { name, password, birthdate, profilepic, age} = body;
+        let { name, password, email, birthdate, profilepic, age} = body;
+        
+        const existingUser = await User.findOne({email})
+        if(existingUser){
+          res.status(200).json({error: "El E-mail ingresado se encuentra en uso."})
+        }
+
+        const newUser = new User({ name, password, email, birthdate, profilepic, age})
       } catch (error) {
         
       }
