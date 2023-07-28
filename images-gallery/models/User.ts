@@ -1,6 +1,19 @@
-import { Schema, model, models} from 'mongoose'
+import { Schema, model, models, Document, Model} from 'mongoose'
 
-var userSchema = new Schema(
+interface UserDocument extends Document {
+    firstname: string;
+    lastname: string;
+    name: string;
+    password: string;
+    email: string;
+    profilepic: string;
+    birthdate: Date;
+    age?: number;
+    active: boolean;
+    deleted: boolean;
+  }
+
+var userSchema = new Schema<UserDocument>(
     {
         firstname: {
             type: String,
@@ -49,6 +62,6 @@ var userSchema = new Schema(
     { timestamps: false, versionKey: false }
 )
 
-var User = models.User || model("User", userSchema);
+const User: Model<UserDocument> = models.User || model<UserDocument>("User", userSchema);
 
 module.exports = User;
