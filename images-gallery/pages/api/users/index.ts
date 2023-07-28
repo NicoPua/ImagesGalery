@@ -62,7 +62,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           await dbDisconnect();
           res.status(400).json({ error: validationUser.errors[Object.keys(validationUser.errors)[0]].message});
         } 
-
+        console.log(newUser)
+        await newUser.save();
         await dbDisconnect();
         res.status(200).json({Nice: "Datos correctos"})
 
