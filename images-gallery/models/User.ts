@@ -2,11 +2,22 @@ import { Schema, model, models} from 'mongoose'
 
 var userSchema = new Schema(
     {
-        name: {
+        firstname: {
             type: String,
-            required: [true, "El usuario es requerido"],
+            required: [true, "El nombre es requerido"],
             trim: true
         },
+        lastname: {
+            type: String,
+            required: [true, "El apellido es requerido"],
+            trim: true
+        },
+        name: {
+            type: String,
+            required: [true, "El nombre de usuario es requerido"],
+            trim: true
+        }
+        ,
         password: {
             type: String,
             required: [true, "La contraseña es requerida"],
