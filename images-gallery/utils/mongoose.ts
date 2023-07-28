@@ -1,29 +1,30 @@
-import mongoose, { Connection, ConnectOptions } from "mongoose";
+const mongoose = require("mongoose");
 
-interface MyConnectOptions extends ConnectOptions {
+interface MyConnectOptions{
   useNewUrlParser: boolean;
   useUnifiedTopology: boolean;
 }
 
 export async function dbConnect(): Promise<void> {
-  const options: MyConnectOptions = {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  };
+  try {
+    const options: MyConnectOptions = {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    };
+  
+    await mongoose.connect(process.env.MONGODB_URL!, options)
 
-  await mongoose.connect(process.env.MONGODB_URL!, options)
-  .then(() => {
-    const db: Connection = mongoose.connection;
-    db.on("error", (err) => {
+    const db = mongoose.connection;
+    db.on("error", (err: any) => {
       console.error("Connection error", err);
     });
     db.once("open", () => {
       console.log("Connection established");
     });
-  })
-  .catch((error) => {
+   
+  } catch (error: any) {
     console.error("Error connecting to Images-Gallery Database", error);
-  });
+  }
 }
 
 export async function dbDisconnect(): Promise<void> {
