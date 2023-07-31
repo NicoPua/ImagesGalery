@@ -7,7 +7,7 @@ const User = require('../../../models/User')
 interface queryObj {
   deleted: object,
   active: object,
-  name?: object
+  firstname?: object
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -17,24 +17,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   switch (method) {
     case "GET":
       try {
-        let { name } = query;
-        const queryOptions: queryObj = {
+        let { firstname } = query;
+        const queryOptions: queryObj = {      //Condiciones para filtrar documentos de la database 
           deleted: { $ne: true },
           active: { $ne: false },
         };
 
-        if (name) {
-          queryOptions.name = { $regex: `${name}`, $options: "i" };
-        }
-
-        const response = await User.find(queryOptions)
-
-        if (response.length === 0) {
-          await dbDisconnect();
-          return res.status(404).json({ error: `No se encontraron usuarios con el nombre '${name}'.`,});
-        } else {
-          await dbDisconnect();
-          return res.status(200).json(response);
+        if (firstname) {
+          queryOptions.firstname = { $regex: `${firstname}`, $options: "i" };
+          const response = await User.find(queryOptions)
+          if (response.length === 0) {
+            await dbDisconnect();
+            return res.status(404).json({ error: `No se encontraron usuarios ACTIVOS con el nombre '${firstname}'.`,});
+          } else {
+            await dbDisconnect();
+            return res.status(200).json(response);
+          }
+        }else{
+          const allUsers = await User.find()
+          if(allUsers.length) return res.status(200).json(allUsers);
+          else return res.status(400).json({error: "Ha ocurrido un error, no se encontraron usuarios."})
         }
       } catch (error: any) {
         console.log(error);
