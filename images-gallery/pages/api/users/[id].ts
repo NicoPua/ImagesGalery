@@ -72,7 +72,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 await dbDisconnect();
                 return res.status(400).json({error: "No se ha encontrado el usuario con esa ID."});
             }else{
-                await User.findByIdAndDelete(id)
+                await User.findByIdAndDelete(id);
                 await dbDisconnect();
                 return res.status(200).json({success: "Se ha borrado al usuario exitosamente."})
             }
