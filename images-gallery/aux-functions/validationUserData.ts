@@ -21,7 +21,7 @@ const validationUserData = (user: userData) => {
     }else if(!/^[A-Za-z]+$/.test(user.lastname)){
         error.message = "El apellido sólo debe contener letras."
     }else if(user.lastname.trim().length >= 18 || user.lastname.trim().length < 2){
-        error.message = "El apellido debe tener entre 18 a 1 características."
+        error.message = "El apellido debe tener entre 3 a 18 características."
     }
 
     if(user.name.trim().length === 0){
