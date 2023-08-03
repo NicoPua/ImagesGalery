@@ -18,7 +18,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             if(!userFounded) res.status(400).json({error : "No se han encontrado usuarios con esta ID."});
             
             const { firstname, lastname, email, birthdate, age} = body;
-            const bodyInfo: userData = { firstname , lastname, email, birthdate, age, name: userFounded.name , password: userFounded.password, profilepic: userFounded.profilepic  };
+            const bodyInfo: userData = { 
+                firstname , 
+                lastname, 
+                email, 
+                birthdate, 
+                age, 
+                name: userFounded.name , 
+                password: userFounded.password, 
+                profilepic: userFounded.profilepic
+            };
 
             if(!firstname || !lastname || !email || !birthdate || !age){
                 return res.status(400).json({error: "Faltan datos por ingresar."})
@@ -49,17 +58,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 error: "No se pudo completar la petición, intentelo más tarde.",
             });
         } catch (error: any) {
-            console.log(error);
             await dbDisconnect();
-            return res.status(400).json({ error: error.message });
+            return res.status(404).json({ error: error.message });
         }
     break;
     
     case "DELETE":
         try {
-            
+            const { id } = query;
+
+            const userToDelete = await User.findById(id);
+            if(!userToDelete) {
+                await dbDisconnect();
+                return res.status(400).json({error: "No se ha encontrado el usuario con esa ID."});
+            }else{
+                await User.findByIdAndDelete(id)
+                await dbDisconnect();
+                return res.status(200).json({success: "Se ha borrado al usuario exitosamente."})
+            }
         } catch (error: any) {
-            console.log(error);
             await dbDisconnect();
             return res.status(400).json({ error: error.message })
         }
@@ -67,7 +84,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     default:
         await dbDisconnect();
-        return res.status(400).json({ error: "La petición HTTP no existe en la base de datos" });
+        return res.status(404).json({ error: "El tipo de petición HTTP no existe en en el backend." });
     
   }
 }
