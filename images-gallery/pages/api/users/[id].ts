@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import validationUserData from "@/aux-functions/validationUserData";
 import { dbConnect, dbDisconnect } from "@/utils/mongoose";
-
+import { userData } from "@/pages/api/users"
 const User = require('../../../models/User')
 
 //ENDPOINT: /api/users/[id]
@@ -14,22 +14,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     case "PUT":
         try {
             const { id } = query;
-            const { firstname, lastname, password, email, birthdate, age} = body;
             const userFounded = await User.findById(id);
-            if(!userFounded){
-                res.status(400).json({error : "No se han encontrado usuarios con esta ID."})
+            if(!userFounded) res.status(400).json({error : "No se han encontrado usuarios con esta ID."});
+            
+            const { firstname, lastname, email, birthdate, age} = body;
+            const bodyInfo: userData = { firstname , lastname, email, birthdate, age, name: userFounded.name , password: userFounded.password, profilepic: userFounded.profilepic  };
+
+            if(!firstname || !lastname || !email || !birthdate || !age){
+                return res.status(400).json({error: "Faltan datos por ingresar."})
             }
+            const errorMsg : string = validationUserData(bodyInfo);
+            if(errorMsg) return res.status(400).json({error: errorMsg})
 
             const updatedUser = await User.updateOne(
                 { _id: id },
                 {   
                     firstname,
                     lastname, 
-                    password, 
                     email,
                     birthdate, 
                     age 
                 });
+
             if (updatedUser.acknowledged){
                 await dbDisconnect();
                 return res.status(200).json({
@@ -37,7 +43,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     msg: "Los datos se actualizaron con éxito!",
                 });
             } 
-            
             await dbDisconnect();
             return res.status(400).json({
                 success: false,
@@ -51,6 +56,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     break;
     
     case "DELETE":
+        try {
+            
+        } catch (error: any) {
+            console.log(error);
+            await dbDisconnect();
+            return res.status(400).json({ error: error.message })
+        }
     break;
 
     default:
