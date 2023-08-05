@@ -1,23 +1,33 @@
-interface photoData{
-    id: string,
-    created_at: string,
-    description: string,
-    urls: object,
-    links: object,
-    likes: number,
-    user: object
-}
+import { PhotoData } from "../aux-interfaces/apiInterface";
+
 
 const cleanAPIData = async (allPhotos: any) => {
-    const filteredData = await allPhotos.map((obj : photoData)=>{
+    const filteredData = await allPhotos.map((obj : PhotoData)=>{
         return ({
             id: obj.id ,
             created_at: obj.created_at ,
             description: obj.description ,
-            urls: obj.urls,
-            links: obj.links,
+            urls: {
+                full_resolution: obj.urls.full,
+                low_resolution: obj.urls.small,
+                download: obj.urls.small_s3
+            },
+            links: {
+                fullscreen: obj.links.download
+            },
             likes: obj.likes,
-            user: obj.user,
+            user_profile: {
+                id: obj.user.id,
+                username: obj.user.username, 
+                name: obj.user.name,
+                links: {
+                    self: obj.user.links.self,
+                    portfolio: obj.user.links.portfolio,
+                    photos: obj.user.links.photos
+                },
+                profile_image: obj.user.profile_image,
+                social: obj.user.social
+            },
         });
     })
     return filteredData;
