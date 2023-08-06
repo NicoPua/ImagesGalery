@@ -19,8 +19,8 @@ var photoSchema = new Schema(
     },
     profilepic: {
       type: String,
-      default:
-        "https://res.cloudinary.com/dacl2du1v/image/upload/v1684330929/userAvt_tkcm8u.png",
+      default: 
+        "https://img.freepik.com/premium-vector/no-photo-available-vector-icon-default-image-symbol-picture-coming-soon-web-site-mobile-app_87543-10615.jpg?w=2000",
     },
     likes: {
       type: Number
