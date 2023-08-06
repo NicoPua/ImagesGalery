@@ -1,8 +1,6 @@
 import { userData } from "@/pages/api/users"
+import { errorInfo } from "@/aux-interfaces/auxLittleInterfaces"
 
-interface errorInfo{
-    message: string,
-}
 const validationUserData = (user: userData) => {
     const error: errorInfo = {
         message: ""
