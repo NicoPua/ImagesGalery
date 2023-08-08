@@ -42,10 +42,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     
     case "POST":
       try {
-        const { description, user, location, rating, profilepic, likes, reviews, hidden } = body;
-        const bodyData : BodyInformation = { description, user, location, rating, profilepic, likes, reviews, hidden }
+        const { description, user, location, profilepic, rating, likes, reviews } = body;
+        
+        if(!description || !user){
+          return res.status(400).json({ error: "Faltan datos por completar."});
+        }
+
+        const bodyData : BodyInformation = { description, user, location, profilepic, rating, likes, reviews }
         const errorMsg: string = cleanPostData(bodyData);
-        if(errorMsg.length){
+        if(errorMsg.length !== 0){
           return res.status(400).json({ error: errorMsg })
         }
 
@@ -57,7 +62,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }else{
           await newPhoto.save();
           await dbDisconnect();
-          return res.status(200).json({ success: "Datos correctos" });
+          return res.status(200).json({ success: "Datos correctos", data: newPhoto });
         }
       } catch (error: any) {
         await dbDisconnect();
@@ -75,9 +80,8 @@ export interface BodyInformation{
   description: string,
   user: object,
   location: string,
-  rating: string,
   profilepic: string,
+  rating: number,
   likes: number,
-  reviews: string,
-  hidden: boolean
+  reviews: string
 }
