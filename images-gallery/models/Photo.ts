@@ -12,10 +12,11 @@ var photoSchema = new Schema(
     },
     location: {
       type: String,
-      default: 'undefined',
+      default: "Without location",
     },
     rating: {
-      type: String,
+      type: Number,
+      default: 0
     },
     profilepic: {
       type: String,
@@ -23,12 +24,12 @@ var photoSchema = new Schema(
         "https://img.freepik.com/premium-vector/no-photo-available-vector-icon-default-image-symbol-picture-coming-soon-web-site-mobile-app_87543-10615.jpg?w=2000",
     },
     likes: {
-      type: Number
-    }
-    ,
+      type: Number,
+      default: 0
+    },
     reviews: {
       type: String,
-      description: String,
+      default: "No hay reviews."
     },
     hidden: { 
       type: Boolean,
