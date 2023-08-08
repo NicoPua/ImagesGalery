@@ -34,7 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             return res.status(200).json(response);
           }
         }else{
-          const allUsers = await User.find()
+          const allUsers = await User.find(queryOptions)
           if(allUsers.length) return res.status(200).json(allUsers);
           else return res.status(400).json({error: "Ha ocurrido un error, no se encontraron usuarios."})
         }
@@ -62,12 +62,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const validationUser = newUser.validateSync();
         if(validationUser){
           await dbDisconnect();
-          res.status(400).json({ error: validationUser.errors[Object.keys(validationUser.errors)[0]].message});
+          return res.status(400).json({ error: validationUser.errors[Object.keys(validationUser.errors)[0]].message});
         } 
-        console.log(newUser)
         await newUser.save();
         await dbDisconnect();
-        res.status(200).json({Nice: "Datos correctos"})
+        return res.status(200).json({ success: "Datos correctos" });
 
       } catch (error:any) {
         console.log(error);
@@ -79,7 +78,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     default:
       await dbDisconnect();
       return res.status(400).json({ error: "La petición HTTP no existe en la base de datos" });
-    
+    break;
   }
 }
 
