@@ -1,9 +1,11 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-const Photo = require("@/models/Photo");
 import axios from 'axios';
 import { dbConnect, dbDisconnect } from '@/utils/mongoose'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import cleanAPIData from '@/aux-functions/cleanAPIData';
+import cleanPostData from '@/aux-functions/cleanPostData';
+
+const Photo = require("@/models/Photo");
 
 //ENDPOINT /api/photos
 
@@ -17,11 +19,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     case "GET":
       try {
         const response = await axios.get(`https://api.unsplash.com/photos/?client_id=${UNSPLASH_ACCESS_KEY}`);
-
         const cleanedData : any = await cleanAPIData(response.data);
-        if(cleanedData.length){
+
+        const queryOptions: object = {      //Condiciones para filtrar documentos de la database 
+          hidden: { $ne: true }
+        };
+        const allPhotosDB = await Photo.find(queryOptions);
+        const allPhotos = [...cleanedData, ...allPhotosDB];
+
+        if(allPhotos.length){
           await dbDisconnect();
-          return res.status(200).json(cleanedData);
+          return res.status(200).json(allPhotos);
         }else{
           await dbDisconnect();
           return res.status(200).json({ error: "Ha ocurrido un error"});
@@ -30,10 +38,46 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         await dbDisconnect();
         return res.status(400).json({error: error.message});
       }
-      break;
-  
+    break;
+    
+    case "POST":
+      try {
+        const { description, user, location, rating, profilepic, likes, reviews, hidden } = body;
+        const bodyData : BodyInformation = { description, user, location, rating, profilepic, likes, reviews, hidden }
+        const errorMsg: string = cleanPostData(bodyData);
+        if(errorMsg.length){
+          return res.status(400).json({ error: errorMsg })
+        }
+
+        const newPhoto = new Photo(bodyData);
+        const validationPhoto = newPhoto.validateSync();
+        if(validationPhoto){
+          await dbDisconnect();
+          return res.status(400).json({ error: validationPhoto.errors[Object.keys(validationPhoto.errors)[0]].message});
+        }else{
+          await newPhoto.save();
+          await dbDisconnect();
+          return res.status(200).json({ success: "Datos correctos" });
+        }
+      } catch (error: any) {
+        await dbDisconnect();
+        return res.status(400).json({error: error.message})
+      }
+    break;
+    
     default:
       await dbDisconnect();
       return res.status(400).json({error: "La petición HTTP no existe en la base de datos"});
   }
+}
+
+export interface BodyInformation{
+  description: string,
+  user: object,
+  location: string,
+  rating: string,
+  profilepic: string,
+  likes: number,
+  reviews: string,
+  hidden: boolean
 }
