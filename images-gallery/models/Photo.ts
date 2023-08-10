@@ -6,6 +6,10 @@ var photoSchema = new Schema(
       type: String,
       required: [true, "La descripcion es requerida"]
     },
+    uploaded_on: {
+      type: Date,
+      required: [true, "La fecha es requerida"]
+    },
     user: {
       type: Schema.Types.ObjectId,
       ref: "User"
@@ -18,7 +22,7 @@ var photoSchema = new Schema(
       type: Number,
       default: 0
     },
-    profilepic: {
+    image: {
       type: String,
       default: 
         "https://img.freepik.com/premium-vector/no-photo-available-vector-icon-default-image-symbol-picture-coming-soon-web-site-mobile-app_87543-10615.jpg?w=2000",
