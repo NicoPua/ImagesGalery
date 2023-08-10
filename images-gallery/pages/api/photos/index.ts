@@ -3,7 +3,7 @@ import axios from 'axios';
 import { dbConnect, dbDisconnect } from '@/utils/mongoose'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import cleanAPIData from '@/aux-functions/cleanAPIData';
-import cleanPostData from '@/aux-functions/cleanPostData';
+import validationPostData from '@/aux-functions/validationPostData';
 
 const Photo = require("@/models/Photo");
 
@@ -12,20 +12,24 @@ const Photo = require("@/models/Photo");
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   await dbConnect();
 
-  const {method, query, body} = req;
+  const {method, body} = req;
   const { UNSPLASH_ACCESS_KEY } = process.env;
 
   switch (method) {
     case "GET":
       try {
         const response = await axios.get(`https://api.unsplash.com/photos/?client_id=${UNSPLASH_ACCESS_KEY}`);
-        const cleanedData : any = await cleanAPIData(response.data);
+        const cleanedAPIData : any = await cleanAPIData(response.data);
 
         const queryOptions: object = {      //Condiciones para filtrar documentos de la database 
           hidden: { $ne: true }
         };
-        const allPhotosDB = await Photo.find(queryOptions);
-        const allPhotos = [...cleanedData, ...allPhotosDB];
+        const allPhotosDB = await Photo.find(queryOptions)
+        .populate(
+          "user",
+          "_id name firstname lastname profilepic email"
+        );
+        const allPhotos = [...cleanedAPIData, ...allPhotosDB];
 
         if(allPhotos.length){
           await dbDisconnect();
@@ -42,14 +46,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     
     case "POST":
       try {
-        const { description, user, location, profilepic, rating, likes, reviews } = body;
+        const { description, user, location, image, rating, likes, reviews } = body;
         
         if(!description || !user){
           return res.status(400).json({ error: "Faltan datos por completar."});
         }
 
-        const bodyData : BodyInformation = { description, user, location, profilepic, rating, likes, reviews }
-        const errorMsg: string = cleanPostData(bodyData);
+        const fechaActual = new Date;
+        const bodyData : BodyInformation = { description, uploaded_on: fechaActual, user, location, image, rating, likes, reviews }
+        const errorMsg: string = validationPostData(bodyData);
         if(errorMsg.length !== 0){
           return res.status(400).json({ error: errorMsg })
         }
@@ -78,9 +83,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
 export interface BodyInformation{
   description: string,
+  uploaded_on: Date,
   user: object,
   location: string,
-  profilepic: string,
+  image: string,
   rating: number,
   likes: number,
   reviews: string
