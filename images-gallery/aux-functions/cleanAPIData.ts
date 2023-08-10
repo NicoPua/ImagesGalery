@@ -5,7 +5,7 @@ const cleanAPIData = async (allPhotos: any) => {
     const filteredData = await allPhotos.map((obj : PhotoData)=>{
         return ({
             id: obj.id ,
-            created_at: obj.created_at ,
+            uploaded_on: obj.created_at ,
             description: obj.description ,
             urls: {
                 full_resolution: obj.urls.full,
