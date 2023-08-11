@@ -35,8 +35,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           }
         }else{
           const allUsers = await User.find(queryOptions)
-          if(allUsers.length) return res.status(200).json(allUsers);
-          else return res.status(400).json({error: "Ha ocurrido un error, no se encontraron usuarios."})
+          if(allUsers.length) {
+            await dbDisconnect();
+            return res.status(200).json(allUsers);
+          }else{
+            await dbDisconnect();
+            return res.status(400).json({error: "Ha ocurrido un error, no se encontraron usuarios."});
+          } 
         }
       } catch (error: any) {
         console.log(error);
