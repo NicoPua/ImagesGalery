@@ -12,7 +12,11 @@ const Photo = require("@/models/Photo");
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   await dbConnect();
 
-  const {method, body} = req;
+  const { 
+    method,
+    body,
+  } = req;
+
   const { UNSPLASH_ACCESS_KEY } = process.env;
 
   switch (method) {
@@ -77,7 +81,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     
     default:
       await dbDisconnect();
-      return res.status(400).json({error: "La petición HTTP no existe en la base de datos"});
+      return res.status(400).json({error: "La petición HTTP no existe."});
+    break;
   }
 }
 
