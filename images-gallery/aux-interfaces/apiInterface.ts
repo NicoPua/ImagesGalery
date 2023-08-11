@@ -5,14 +5,26 @@ export interface PhotoData{
     urls: PhotoUrls,
     links: PhotoUrls,
     likes: number,
-    user: UserInformation
+    user: UserInformation,
+
+    location?: LocationPhoto,
+    views?: number,
+    downloads?: number
 }
 
 interface PhotoUrls{
-    download: string
-    full: string,
-    small: string,
-    small_s3: string
+    download?: string
+    full?: string,
+    small?: string,
+    small_s3?: string,
+
+    fullscreen?: string
+}
+
+interface LocationPhoto{
+    name: string,
+    city: string,
+    country: string
 }
 
 interface UserInformation{
