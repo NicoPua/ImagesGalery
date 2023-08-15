@@ -15,7 +15,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         try {
             const { id } = query;
             const userFounded = await User.findById(id);
-            if(!userFounded) res.status(400).json({error : "No se han encontrado usuarios con esta ID."});
+            if(!userFounded) throw new Error("No se han encontrado usuarios con esta ID.");
             
             const { firstname, lastname, email, birthdate, age} = body;
             const bodyInfo: userData = { 
@@ -29,9 +29,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 profilepic: userFounded.profilepic
             };
 
-            if(!firstname || !lastname || !email || !birthdate || !age){
-                return res.status(400).json({error: "Faltan datos por ingresar."})
-            }
+            if(!firstname || !lastname || !email || !birthdate || !age) throw new Error("Faltan datos por ingresar.")
+            
             const errorMsg : string = validationUserData(bodyInfo);
             if(errorMsg) return res.status(400).json({error: errorMsg})
 
@@ -84,7 +83,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     default:
         await dbDisconnect();
-        return res.status(404).json({ error: "El tipo de petición HTTP no existe en en el backend." });
-    
+        return res.status(404).json({ error: "El tipo de petición HTTP no existe en en el backend." });  
   }
 }
