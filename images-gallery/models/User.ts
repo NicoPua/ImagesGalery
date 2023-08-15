@@ -13,7 +13,7 @@ interface UserDocument extends Document {
     deleted: boolean;
   }
 
-var userSchema = new Schema<UserDocument>(
+const userSchema = new Schema<UserDocument>(
     {
         firstname: {
             type: String,
