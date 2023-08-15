@@ -36,7 +36,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const allPhotos = [...cleanedAPIData, ...allPhotosDB];
 
         if(allPhotos.length){
-          await dbDisconnect();
           return res.status(200).json(allPhotos);
         }else{
           await dbDisconnect();
