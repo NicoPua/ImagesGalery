@@ -10,13 +10,12 @@ const Photo = require("@/models/Photo");
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     await dbConnect();
 
-    const { method, query } = req;
+    const { method, query: {id}, body } = req;
     const { UNSPLASH_ACCESS_KEY } = process.env;
 
     switch(method){
         case "GET":
             try {
-                const { id } = query;
 
                 if(isValidObjectId(id)){        //Pregunto si la ID recibida por QUERY es del tipo "ObjectID".
                     const photoDB = await Photo.findOne({ _id: id });
@@ -33,7 +32,69 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 return res.status(400).json({ error: error.message}); 
             }
         break;
+        
+        case "PUT":
+            try {
+                if(isValidObjectId(id)){
+                    const { description, location, image, hidden } = body;
+                    if(!description || !image || !location) throw new Error("Faltan datos por recibir.");
+                    const updatedPhoto = await Photo.updateOne(
+                        { _id: id },
+                        { 
+                            description, 
+                            location, 
+                            image,
+                            hidden 
+                        });
+    
+                    if(updatedPhoto.acknowledged){
+                        return res.status(200).json({ 
+                            success: true,
+                            msg: "Los datos se han actualizado correctamente." 
+                        })
+                    }else{
+                        await dbDisconnect();
+                        return res.status(200).json({ 
+                            success: false,
+                            error: "No se pudo completar la petición, intentelo más tarde."
+                        })
+                    }
+                }else{
+                    await dbDisconnect();
+                    throw new Error("Por favor, debe ingresar una ID válida.");
+                }
+            } catch (error : any) {
+                await dbDisconnect()
+                return res.status(400).json({ error: error.message})
+            }
+        break;
 
+        case "DELETE": 
+            try {
+                if(isValidObjectId(id)){
+                    const deletedPhoto = await Photo.findByIdAndRemove(id);
+                    if(deletedPhoto){
+                        return res.status(200).json({ 
+                            success: true,
+                            msg: `Se han borrado correctamente los datos de: ${id}`
+                        });
+                    }else{
+                        await dbDisconnect();
+                        return res.status(400).json({ 
+                            success: false,
+                            msg: "Ha ocurrido un error, no se pudo remover de la Database."
+                        }) 
+                    }
+                }else{
+                    await dbDisconnect();
+                    throw new Error("Por favor, debe ingresar una ID válida.");
+                }
+                
+            } catch (error : any){
+                await dbDisconnect();
+                return res.status(400).json({ error: error.message }) 
+            }
+        break;
         default:
             await dbDisconnect();
             return res.status(400).json({ error: "La petición HTTP solicitada no existe."});
