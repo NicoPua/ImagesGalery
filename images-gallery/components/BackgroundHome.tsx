@@ -7,11 +7,11 @@ interface BackgroundHomeProps {
 
 const BackgroundHome : React.FC<BackgroundHomeProps> = ({ children }) => {
     return (
-        <div className="text-white shadow-2xl ">
+        <div className="select-none text-white shadow-2xl ">
             <Image
+            className='pointer-events-none'
                 src="/images/homebackground.jpg"
                 alt="Background Image"
-                objectFit="cover"
                 width={1680}
                 height={1200}
                 style={{ height: '40rem' }}
