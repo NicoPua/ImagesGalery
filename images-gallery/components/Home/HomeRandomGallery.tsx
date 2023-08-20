@@ -1,4 +1,13 @@
+"use client";
+import { useAppDispatch, useAppSelector } from "@/utils/redux/hooks";
+import { getUsers } from "@/utils/redux/actions";
+import { useEffect } from "react";
+
 const HomeRandomGallery = () =>{
+    const count = useAppSelector((state)=> state.storageReducer.allUsers)
+    const dispatch = useAppDispatch();
+
+
     return(
         <div className="p-2">
             <div className="flex">
@@ -20,6 +29,10 @@ const HomeRandomGallery = () =>{
                         <option className='bg-white' value="opcion3">Lo más nuevo</option>
                     </select>
                 </div>
+            </div>
+            <div>
+                <button onClick={()=> dispatch(getUsers())}>asdasd</button>
+                {count.length}
             </div>
         </div>
     )
