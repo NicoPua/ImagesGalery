@@ -1,13 +1,20 @@
 "use client";
 import { useAppDispatch, useAppSelector } from "@/utils/redux/hooks";
-import { getUsers } from "@/utils/redux/actions";
+import { getPhotos } from "@/utils/redux/actions";
 import { useEffect } from "react";
 
 const HomeRandomGallery = () =>{
-    const count = useAppSelector((state)=> state.storageReducer.allUsers)
+    const count = useAppSelector((state)=> state.storageReducer.allPhotos)
     const dispatch = useAppDispatch();
 
+    useEffect(()=>{
+        dispatch(getPhotos());
+    },[])
 
+    const mostrar = () =>{
+        dispatch(getPhotos());
+        console.log(count)
+    }
     return(
         <div className="p-2">
             <div className="flex">
@@ -31,7 +38,7 @@ const HomeRandomGallery = () =>{
                 </div>
             </div>
             <div>
-                <button onClick={()=> dispatch(getUsers())}>asdasd</button>
+                <button onClick={mostrar}>asdasd</button>
                 {count.length}
             </div>
         </div>
