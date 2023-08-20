@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    photosAPI: [],
+    allPhotos: [],
     allUsers: []
 }
 
@@ -9,11 +9,11 @@ export const storageSlice = createSlice({
     name: 'storage',
     initialState,
     reducers: {
-        getAllUsers: (state, action) => { 
-            state.allUsers = action.payload;
+        getAllPhotos: (state, action) => { 
+            state.allPhotos = action.payload;
         }
     }
 });
 
-export const { getAllUsers } = storageSlice.actions;
+export const { getAllPhotos } = storageSlice.actions;
 export default storageSlice.reducer;
