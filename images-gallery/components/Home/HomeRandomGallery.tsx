@@ -1,27 +1,24 @@
 "use client";
-import { useAppDispatch, useAppSelector } from "@/utils/redux/hooks";
+import Image from "next/image";
 import { getPhotos } from "@/utils/redux/actions";
+import { useAppDispatch, useAppSelector } from "@/utils/redux/hooks";
 import { useEffect } from "react";
 
 const HomeRandomGallery = () =>{
-    const count = useAppSelector((state)=> state.storageReducer.allPhotos)
+    const allPhotos = useAppSelector((state)=> state.storageReducer.allPhotos)
     const dispatch = useAppDispatch();
 
     useEffect(()=>{
         dispatch(getPhotos());
     },[])
 
-    const mostrar = () =>{
-        dispatch(getPhotos());
-        console.log(count)
-    }
     return(
         <div className="p-2">
-            <div className="flex">
-                <div className="pl-32 pt-20 w-1/2">
+            <div className="flex mb-10">
+                <div className="pl-24 pt-20 w-1/2">
                     <h1 className="font-bold text-3xl">Fotos de stock gratuitas</h1>
                 </div>
-                <div className="focus:outline-none pr-32 pt-20 w-1/2 flex justify-end">
+                <div className="focus:outline-none pr-24 pt-20 w-1/2 flex justify-end">
                     <select 
                         className="text-lg 
                             w-2/6 py-2 pl-4 
@@ -37,9 +34,18 @@ const HomeRandomGallery = () =>{
                     </select>
                 </div>
             </div>
-            <div>
-                <button onClick={mostrar}>asdasd</button>
-                {count.length}
+            <div className="flex flex-wrap flex-auto pl-20 pr-24">
+                {allPhotos.map((photo : any)=> {
+                    return (<>
+                        <div className="w-fit h-fit m-3 bg-red-900">
+                            {photo.urls?<>
+                                <Image src={photo.urls.full_resolution} alt="newphoto" width={460} height={500} /> 
+                            </>:<></>
+                            }
+                                                       
+                        </div>
+                    </>)
+                })}
             </div>
         </div>
     )
