@@ -11,9 +11,12 @@ export const storageSlice = createSlice({
     reducers: {
         getAllPhotos: (state, action) => { 
             state.allPhotos = action.payload;
+        },
+        getAllUsers: (state, action) =>{
+            state.allUsers = action.payload;
         }
     }
 });
 
-export const { getAllPhotos } = storageSlice.actions;
+export const { getAllPhotos, getAllUsers } = storageSlice.actions;
 export default storageSlice.reducer;
