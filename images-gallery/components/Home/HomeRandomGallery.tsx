@@ -2,11 +2,19 @@
 import Image from "next/image";
 import { getPhotos } from "@/utils/redux/actions";
 import { useAppDispatch, useAppSelector } from "@/utils/redux/hooks";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const HomeRandomGallery = () =>{
     const allPhotos = useAppSelector((state)=> state.storageReducer.allPhotos)
     const dispatch = useAppDispatch();
+    
+    const [imageInfo, setImageInfo] = useState<any>({});
+    
+    const slicedPhotos = {
+        firstpart: allPhotos.slice(0,3),
+        secondpart: allPhotos.slice(3,7),
+        thirdpart: allPhotos.slice(7,10)
+    };
 
     useEffect(()=>{
         dispatch(getPhotos());
@@ -34,18 +42,119 @@ const HomeRandomGallery = () =>{
                     </select>
                 </div>
             </div>
-            <div className="flex flex-wrap flex-auto pl-20 pr-24">
-                {allPhotos.map((photo : any)=> {
-                    return (<>
-                        <div className="w-fit h-fit m-3 bg-red-900">
-                            {photo.urls?<>
-                                <Image src={photo.urls.full_resolution} alt="newphoto" width={460} height={500} /> 
-                            </>:<></>
-                            }
-                                                       
-                        </div>
-                    </>)
-                })}
+            <div className="flex h-fit flex-auto justify-around ml-16 mr-16">
+                <div className="w-fit h-fit">
+                    {slicedPhotos.firstpart.map((image : any, index)=>{ 
+                        return (<>                         
+                            {imageInfo.id === image.id && (
+                                <div  className="absolute bg-gradient-to-r from-gray-900 text-white"
+                                    onMouseEnter={()=>setImageInfo({...image})}
+                                    onMouseLeave={()=>setImageInfo({})}
+                                    >
+                                    <div className="flex">
+                                        <Image
+                                            className="ml-3 p-2 w-16 rounded-full"                                                 
+                                            src={image.user_profile.profile_image.large} 
+                                            alt="profilepic" 
+                                            width={50}
+                                            height={50}/>
+                                        <div className="pl-5 pt-2">
+                                            <h2 className="text-xl font-bold">Publicado por {image.user_profile.username}</h2>
+                                            <p className="text-sm">Fecha de publicación: {image.uploaded_on.slice(0,10)}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                            <div className="w-fit h-fit mb-10 shadow"
+                                onMouseEnter={()=>setImageInfo({...image})}
+                                onMouseLeave={()=>setImageInfo({})}
+                                >
+                                <Image
+                                    key={index}
+                                    src={image.urls.full_resolution} 
+                                    alt="new photo" 
+                                    width={450} 
+                                    height={500}
+                                />
+                            </div>                                            
+                        </>)
+                    })}
+                </div>
+
+                <div className="ml-5 mr-5">
+                    {slicedPhotos.secondpart.map((image : any, index : number)=>{ 
+                        return (<>
+                            {imageInfo.id === image.id && (
+                                <div  className="absolute bg-gradient-to-r from-gray-900 text-white"
+                                    onMouseEnter={()=>setImageInfo({...image})}
+                                    onMouseLeave={()=>setImageInfo({})}
+                                    >
+                                    <div className="flex">
+                                        <Image
+                                            className="ml-3 p-2 w-16 rounded-full"                                                 
+                                            src={image.user_profile.profile_image.large} 
+                                            alt="profilepic" 
+                                            width={60}
+                                            height={60}/>
+                                        <div className="w-96 pl-5 pt-2">
+                                            <h2 className="text-xl font-bold">Publicado por {image.user_profile.username}</h2>
+                                            <p className="text-sm">Fecha de publicación: {image.uploaded_on.slice(0,10)}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                            <div className="w-fit h-fit mb-10 shadow"
+                                onMouseEnter={()=>setImageInfo({...image})}
+                                onMouseLeave={()=>setImageInfo({})}
+                                >
+                                <Image
+                                    key={index}
+                                    src={image.urls.full_resolution} 
+                                    alt="new photo" 
+                                    width={450} 
+                                    height={500}
+                                />
+                            </div>
+                        </>)
+                    })}
+                </div>
+                <div>
+                    {slicedPhotos.thirdpart.map((image: any, index: number)=>{ 
+                        return (<>
+                            {imageInfo.id === image.id && (
+                                <div className="absolute bg-gradient-to-r from-gray-900 text-white"
+                                    onMouseEnter={()=>setImageInfo({...image})}
+                                    onMouseLeave={()=>setImageInfo({})}
+                                    >
+                                    <div className="flex">
+                                        <Image
+                                            className="ml-3 p-2 w-16 rounded-full"                                                 
+                                            src={image.user_profile.profile_image.large} 
+                                            alt="profilepic" 
+                                            width={60}
+                                            height={60}/>
+                                        <div className="w-96 pl-5 pt-2">
+                                            <h2 className="text-xl font-bold">Publicado por {image.user_profile.username}</h2>
+                                            <p className="text-sm">Fecha de publicación: {image.uploaded_on.slice(0,10)}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                            <div className="w-fit h-fit mb-10 shadow transition-all duration-300 ease-in-out"
+                                onMouseEnter={()=>setImageInfo({...image})}
+                                onMouseLeave={()=>setImageInfo({})}
+                                >
+                                <Image
+                                    key={index}
+                                    src={image.urls.full_resolution} 
+                                    alt="new photo" 
+                                    width={450} 
+                                    height={500}
+                                />
+                            </div>
+                        </>)
+                    })}
+                </div>
             </div>
         </div>
     )
