@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
 import { getPhotos } from "@/utils/redux/actions";
 import { useAppDispatch, useAppSelector } from "@/utils/redux/hooks";
 import { useEffect, useState } from "react";
@@ -49,22 +50,30 @@ const HomeRandomGallery = () =>{
                     {slicedPhotos.firstpart.map((image : any, index)=>{ 
                         return (<>                         
                             {imageInfo.id === image.id && (<>
-                                <div  className="absolute bg-gradient-to-r from-gray-900 text-white"
-                                    onMouseEnter={()=>setImageInfo({...image})}
-                                    onMouseLeave={()=>setImageInfo({})}
-                                    >
-                                    <div className="w-fit h-fit flex">
-                                        <Image
-                                            className="ml-3 p-2 w-16 rounded-full"                                                 
-                                            src={image.user_profile.profile_image.large} 
-                                            alt="profilepic" 
-                                            width={50}
-                                            height={50}/>
-                                        <div className="pl-5 pt-2">
-                                            <h2 className="text-xl font-bold">Publicado por {image.user_profile.username}</h2>
-                                            <p className="text-sm">Fecha de publicación: {image.uploaded_on.slice(0,10)}</p>
-                                        </div>
-                                    </div>                                   
+                                <div  className="absolute flex w-96 text-white bg-gradient-to-r from-gray-900"
+                                onMouseEnter={()=>setImageInfo({...image})}
+                                onMouseLeave={()=>setImageInfo({})}
+                                >
+                                    <Image
+                                        className="p-2 w-16 rounded-full pointer-events-none"                                                 
+                                        src={image.user_profile.profile_image.large} 
+                                        alt="profilepic" 
+                                        width={60}
+                                        height={60}/>
+                                    <div className="w-3/4 pl-5 pt-2">
+                                        <h2 className="text-xl font-bold truncate">{image.user_profile.username}</h2>
+                                        <p className="text-sm">Fecha de publicación: {image.uploaded_on.slice(0,10)}</p>
+                                    </div>
+                                    <div className="w-1/6 flex justify-end flex items-center select-none">
+                                        <Link href={image.urls.download}>
+                                            <Image
+                                                className="bg-gray-300 hover:bg-gray-400 p-2 rounded-xl"                                                 
+                                                src="/images/descargar.png" 
+                                                alt="download3" 
+                                                width={40}
+                                                height={40}/>
+                                        </Link>
+                                    </div>
                                 </div>
                             </>)}
                             <div className="w-fit h-fit mb-10 shadow-2xl"
@@ -84,25 +93,33 @@ const HomeRandomGallery = () =>{
                 </div>
                 
                 {/* COLUMNA 2 */}
-                <div className="ml-5 mr-5">
+                <div className="ml-3 mr-3">
                     {slicedPhotos.secondpart.map((image : any, index : number)=>{ 
                         return (<>
                             {imageInfo.id === image.id && (
-                                <div  className="absolute bg-gradient-to-r from-gray-900 text-white"
-                                    onMouseEnter={()=>setImageInfo({...image})}
-                                    onMouseLeave={()=>setImageInfo({})}
-                                    >
-                                    <div className="flex">
-                                        <Image
-                                            className="ml-3 p-2 w-16 rounded-full"                                                 
-                                            src={image.user_profile.profile_image.large} 
-                                            alt="profilepic" 
-                                            width={60}
-                                            height={60}/>
-                                        <div className="w-96 pl-5 pt-2">
-                                            <h2 className="text-xl font-bold">Publicado por {image.user_profile.username}</h2>
-                                            <p className="text-sm">Fecha de publicación: {image.uploaded_on.slice(0,10)}</p>
-                                        </div>
+                                <div  className="absolute flex w-96 text-white bg-gradient-to-r from-gray-900"
+                                onMouseEnter={()=>setImageInfo({...image})}
+                                onMouseLeave={()=>setImageInfo({})}
+                                >
+                                    <Image
+                                        className="p-2 w-16 rounded-full pointer-events-none"                                                 
+                                        src={image.user_profile.profile_image.large} 
+                                        alt="profilepic" 
+                                        width={60}
+                                        height={60}/>
+                                    <div className="w-3/4 pl-5 pt-2">
+                                        <h2 className="text-xl font-bold truncate">{image.user_profile.username}</h2>
+                                        <p className="text-sm">Fecha de publicación: {image.uploaded_on.slice(0,10)}</p>
+                                    </div>
+                                    <div className="w-1/6 flex justify-end flex items-center select-none">
+                                        <Link href={image.urls.download}>
+                                            <Image
+                                                className="bg-gray-300 hover:bg-gray-400 p-2 rounded-xl"                                                 
+                                                src="/images/descargar.png" 
+                                                alt="download3" 
+                                                width={40}
+                                                height={40}/>
+                                        </Link>
                                     </div>
                                 </div>
                             )}
@@ -113,7 +130,7 @@ const HomeRandomGallery = () =>{
                                 <Image
                                     key={index}
                                     src={image.urls.full_resolution} 
-                                    alt="new photo2" 
+                                    alt="new_photo2" 
                                     width={450} 
                                     height={500}
                                 />
@@ -127,21 +144,29 @@ const HomeRandomGallery = () =>{
                     {slicedPhotos.thirdpart.map((image: any, index: number)=>{ 
                         return (<>
                             {imageInfo.id === image.id && (
-                                <div className="absolute bg-gradient-to-r from-gray-900 text-white"
-                                    onMouseEnter={()=>setImageInfo({...image})}
-                                    onMouseLeave={()=>setImageInfo({})}
-                                    >
-                                    <div className="flex">
-                                        <Image
-                                            className="ml-3 p-2 w-16 rounded-full"                                                 
-                                            src={image.user_profile.profile_image.large} 
-                                            alt="profilepic" 
-                                            width={60}
-                                            height={60}/>
-                                        <div className="w-96 pl-5 pt-2">
-                                            <h2 className="text-xl font-bold">Publicado por {image.user_profile.username}</h2>
-                                            <p className="text-sm">Fecha de publicación: {image.uploaded_on.slice(0,10)}</p>
-                                        </div>
+                                <div  className="absolute flex w-96 text-white bg-gradient-to-r from-gray-900"
+                                onMouseEnter={()=>setImageInfo({...image})}
+                                onMouseLeave={()=>setImageInfo({})}
+                                >
+                                    <Image
+                                        className="p-2 w-16 rounded-full pointer-events-none"                                                 
+                                        src={image.user_profile.profile_image.large} 
+                                        alt="profilepic" 
+                                        width={60}
+                                        height={60}/>
+                                    <div className="w-3/4 pl-5 pt-2">
+                                        <h2 className="text-xl font-bold truncate">{image.user_profile.username}</h2>
+                                        <p className="text-sm">Fecha de publicación: {image.uploaded_on.slice(0,10)}</p>
+                                    </div>
+                                    <div className="w-1/6 flex justify-end flex items-center select-none">
+                                        <Link href={image.urls.download}>
+                                            <Image
+                                                className="bg-gray-300 hover:bg-gray-400 p-2 rounded-xl"                                                 
+                                                src="/images/descargar.png" 
+                                                alt="download3" 
+                                                width={40}
+                                                height={40}/>
+                                        </Link>
                                     </div>
                                 </div>
                             )}
