@@ -43,15 +43,17 @@ const HomeRandomGallery = () =>{
                 </div>
             </div>
             <div className="flex h-fit flex-auto justify-around ml-16 mr-16">
+                
+                {/* COLUMNA 1 */}
                 <div className="w-fit h-fit">
                     {slicedPhotos.firstpart.map((image : any, index)=>{ 
                         return (<>                         
-                            {imageInfo.id === image.id && (
+                            {imageInfo.id === image.id && (<>
                                 <div  className="absolute bg-gradient-to-r from-gray-900 text-white"
                                     onMouseEnter={()=>setImageInfo({...image})}
                                     onMouseLeave={()=>setImageInfo({})}
                                     >
-                                    <div className="flex">
+                                    <div className="w-fit h-fit flex">
                                         <Image
                                             className="ml-3 p-2 w-16 rounded-full"                                                 
                                             src={image.user_profile.profile_image.large} 
@@ -62,17 +64,17 @@ const HomeRandomGallery = () =>{
                                             <h2 className="text-xl font-bold">Publicado por {image.user_profile.username}</h2>
                                             <p className="text-sm">Fecha de publicación: {image.uploaded_on.slice(0,10)}</p>
                                         </div>
-                                    </div>
+                                    </div>                                   
                                 </div>
-                            )}
-                            <div className="w-fit h-fit mb-10 shadow"
+                            </>)}
+                            <div className="w-fit h-fit mb-10 shadow-2xl"
                                 onMouseEnter={()=>setImageInfo({...image})}
                                 onMouseLeave={()=>setImageInfo({})}
                                 >
                                 <Image
                                     key={index}
                                     src={image.urls.full_resolution} 
-                                    alt="new photo" 
+                                    alt="new photo1" 
                                     width={450} 
                                     height={500}
                                 />
@@ -80,7 +82,8 @@ const HomeRandomGallery = () =>{
                         </>)
                     })}
                 </div>
-
+                
+                {/* COLUMNA 2 */}
                 <div className="ml-5 mr-5">
                     {slicedPhotos.secondpart.map((image : any, index : number)=>{ 
                         return (<>
@@ -103,14 +106,14 @@ const HomeRandomGallery = () =>{
                                     </div>
                                 </div>
                             )}
-                            <div className="w-fit h-fit mb-10 shadow"
+                            <div className="w-fit h-fit mb-10 shadow-2xl"
                                 onMouseEnter={()=>setImageInfo({...image})}
                                 onMouseLeave={()=>setImageInfo({})}
                                 >
                                 <Image
                                     key={index}
                                     src={image.urls.full_resolution} 
-                                    alt="new photo" 
+                                    alt="new photo2" 
                                     width={450} 
                                     height={500}
                                 />
@@ -118,6 +121,8 @@ const HomeRandomGallery = () =>{
                         </>)
                     })}
                 </div>
+
+                {/* COLUMNA 3 */}
                 <div>
                     {slicedPhotos.thirdpart.map((image: any, index: number)=>{ 
                         return (<>
@@ -140,14 +145,14 @@ const HomeRandomGallery = () =>{
                                     </div>
                                 </div>
                             )}
-                            <div className="w-fit h-fit mb-10 shadow transition-all duration-300 ease-in-out"
+                            <div className="w-fit h-fit mb-10 shadow-2xl"
                                 onMouseEnter={()=>setImageInfo({...image})}
                                 onMouseLeave={()=>setImageInfo({})}
                                 >
                                 <Image
                                     key={index}
                                     src={image.urls.full_resolution} 
-                                    alt="new photo" 
+                                    alt="new photo3" 
                                     width={450} 
                                     height={500}
                                 />
