@@ -9,7 +9,7 @@ const BackgroundHome : React.FC<BackgroundHomeProps> = ({ children }) => {
     return (
         <div className="select-none text-white shadow-2xl ">
             <Image
-            className='pointer-events-none'
+            className='pointer-events-none w-full'
                 src="/images/homebackground.jpg"
                 alt="Background Image"
                 width={1680}
