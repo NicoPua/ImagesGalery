@@ -15,7 +15,7 @@ export default function Home() {
   },[])
 
   return (
-    <Layout title='Home | Images-Gallery' description='App de Imagenes'>
+    <Layout title='Home | PicsArt Gallery' description='App de Imagenes'>
       <BackgroundHome>
         <div className='w-1/2 h-3/5 select-none flex flex-col justify-around'>
           <h1 className="font-bold text-4xl w-3/4">

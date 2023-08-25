@@ -6,7 +6,7 @@ const inter = Inter({ subsets: ['latin'] })
 
 export default function AboutMe() {
   return (
-    <Layout title='About Me | Images-Gallery' description='Información acerca del creador de esta app.'>
+    <Layout title='About Me | PicsArt Gallery' description='Información acerca del creador de esta app.'>
       <div className='bg-gray-100 pt-10 bg-red-400 w-full h-screen flex justify-center items-center'>
         <div className=' w-3/4 h-3/4 bg-gray-900 text-gray-100 flex justify-around rounded-xl shadow-2xl'>
           <div className='p-10'>
