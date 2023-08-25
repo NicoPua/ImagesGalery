@@ -2,7 +2,8 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     allPhotos: [],
-    allUsers: []
+    allUsers: [],
+    userDetails: {} 
 }
 
 export const storageSlice = createSlice({
@@ -14,9 +15,12 @@ export const storageSlice = createSlice({
         },
         getAllUsers: (state, action) =>{
             state.allUsers = action.payload;
+        },
+        getUserDetails: (state,action) =>{
+            state.userDetails = {...action.payload}
         }
     }
 });
 
-export const { getAllPhotos, getAllUsers } = storageSlice.actions;
+export const { getAllPhotos, getAllUsers, getUserDetails } = storageSlice.actions;
 export default storageSlice.reducer;
