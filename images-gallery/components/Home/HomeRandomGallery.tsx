@@ -13,8 +13,9 @@ const HomeRandomGallery = () =>{
     
     const slicedPhotos = {
         firstpart: allPhotos.slice(0,3),
-        secondpart: allPhotos.slice(3,7),
-        thirdpart: allPhotos.slice(7,10)
+        secondpart: allPhotos.slice(3,6),
+        thirdpart: allPhotos.slice(6,9),
+        lastpic: allPhotos.slice(9,10)
     };
 
     useEffect(()=>{
@@ -61,7 +62,9 @@ const HomeRandomGallery = () =>{
                                         width={60}
                                         height={60}/>
                                     <div className="w-3/4 pl-5 pt-2">
-                                        <h2 className="text-xl font-bold truncate">{image.user_profile.username}</h2>
+                                        <Link href={`/users/${image.user_profile.id}`}>    
+                                            <h2 className="text-xl font-bold truncate hover:underline">{image.user_profile.username}</h2>
+                                        </Link>
                                         <p className="text-sm">Fecha de publicación: {image.uploaded_on.slice(0,10)}</p>
                                     </div>
                                     <div className="w-1/6 flex justify-end flex items-center select-none">
@@ -108,7 +111,9 @@ const HomeRandomGallery = () =>{
                                         width={60}
                                         height={60}/>
                                     <div className="w-3/4 pl-5 pt-2">
-                                        <h2 className="text-xl font-bold truncate">{image.user_profile.username}</h2>
+                                        <Link href={`/users/${image.user_profile.id}`}>    
+                                            <h2 className="text-xl font-bold truncate hover:underline">{image.user_profile.username}</h2>
+                                        </Link>
                                         <p className="text-sm">Fecha de publicación: {image.uploaded_on.slice(0,10)}</p>
                                     </div>
                                     <div className="w-1/6 flex justify-end flex items-center select-none">
@@ -145,8 +150,8 @@ const HomeRandomGallery = () =>{
                         return (<>
                             {imageInfo.id === image.id && (
                                 <div  className="absolute flex w-96 text-white bg-gradient-to-r from-gray-900"
-                                onMouseEnter={()=>setImageInfo({...image})}
-                                onMouseLeave={()=>setImageInfo({})}
+                                    onMouseEnter={()=>setImageInfo({...image})}
+                                    onMouseLeave={()=>setImageInfo({})}
                                 >
                                     <Image
                                         className="p-2 w-16 rounded-full pointer-events-none"                                                 
@@ -155,7 +160,9 @@ const HomeRandomGallery = () =>{
                                         width={60}
                                         height={60}/>
                                     <div className="w-3/4 pl-5 pt-2">
-                                        <h2 className="text-xl font-bold truncate">{image.user_profile.username}</h2>
+                                        <Link href={`/users/${image.user_profile.id}`}>    
+                                            <h2 className="text-xl font-bold truncate hover:underline">{image.user_profile.username}</h2>
+                                        </Link>
                                         <p className="text-sm">Fecha de publicación: {image.uploaded_on.slice(0,10)}</p>
                                     </div>
                                     <div className="w-1/6 flex justify-end flex items-center select-none">
@@ -184,6 +191,63 @@ const HomeRandomGallery = () =>{
                             </div>
                         </>)
                     })}
+                </div>
+            </div>
+            <div className="m-10 flex justify-around bg-gradient-to-b from-gray-400 rounded-2xl">
+                <div className="m-10 w-1/2">
+                    <div className="flex h-16 items-center select-none">
+                        <Image className="pointer-events-none select-none" width={100} height={100} src="/images/onlylogo.png" alt="logopng"/>
+                        <p className="pl-5 text-4xl font-bold">PicsArt Gallery</p>
+                    </div>
+                    <p className="text-2xl mt-10 font-bold">*PicsArt Gallery es una aplicación web destinada a almacenar, descargar imágenes y videos libres de uso. 
+                        <br/>*¡Puedes registrarte o iniciar sesión para subir, descargar y gestionar 
+                        tu material visual tanto de imagen como de video!
+                    </p>
+                </div>
+                <div className="mt-10 bg-green-900">
+                {slicedPhotos.lastpic.map((image : any)=>{
+                    return(<>
+                        {imageInfo.id === image.id && (
+                                <div  className="absolute flex w-96 text-white bg-gradient-to-r from-gray-900"
+                                onMouseEnter={()=>setImageInfo({...image})}
+                                onMouseLeave={()=>setImageInfo({})}
+                                >
+                                    <Image
+                                        className="p-2 w-16 rounded-full pointer-events-none"                                                 
+                                        src={image.user_profile.profile_image.large} 
+                                        alt="profilepic" 
+                                        width={60}
+                                        height={60}/>
+                                    <div className="w-3/4 pl-5 pt-2">
+                                        <Link href={`/users/${image.user_profile.id}`}>
+                                            <h2 className="text-xl font-bold truncate hover:underline">{image.user_profile.username}</h2>
+                                        </Link>
+                                        <p className="text-sm">Fecha de publicación: {image.uploaded_on.slice(0,10)}</p>
+                                    </div>
+                                    <div className="w-1/6 flex justify-end flex items-center select-none">
+                                        <Link href={image.urls.download}>
+                                            <Image
+                                                className="bg-gray-300 hover:bg-gray-400 p-2 rounded-xl"                                                 
+                                                src="/images/descargar.png" 
+                                                alt="download3" 
+                                                width={40}
+                                                height={40}/>
+                                        </Link>
+                                    </div>
+                                </div>
+                        )}                           
+                        <div 
+                            onMouseEnter={()=>setImageInfo({...image})}
+                            onMouseLeave={()=>setImageInfo({})}
+                            >
+                            <Image 
+                                src={image.urls.full_resolution}
+                                width={450}
+                                height={500}
+                                alt="aditionalPic"/>
+                        </div>
+                    </>)
+                })}  
                 </div>
             </div>
         </div>
