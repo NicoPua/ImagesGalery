@@ -12,10 +12,10 @@ export const useUserDetails = () => {
 
     useEffect(()=>{
         dispatch(getUserData(id))
-        return ()=> {
+        return (()=>{
             dispatch(cleanUserData());
-        }
-    },[])
+        })
+    },[id])
 
     return userData;
 }
