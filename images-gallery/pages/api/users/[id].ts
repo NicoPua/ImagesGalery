@@ -2,6 +2,9 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import validationUserData from "@/aux-functions/validationUserData";
 import { dbConnect, dbDisconnect } from "@/utils/mongoose";
 import { userData } from "@/pages/api/users"
+import { isValidObjectId } from 'mongoose';
+import { getUserById } from '@/aux-functions/usernameAPI/getUserById';
+
 const User = require('../../../models/User')
 
 //ENDPOINT: /api/users/[id]
@@ -11,6 +14,27 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const { method, body, query } = req;
 
   switch (method) {
+    case 'GET':
+        try {
+            const { id } = query;
+            if(isValidObjectId(id)){            //Pregunto si la ID recibida por QUERY es del tipo "ObjectID".
+                const userByIdDB = await User.findById(id);
+                return res.status(200).json(userByIdDB);
+            }else{
+                if (typeof id === 'string') {
+                    const userName = id;
+                    const userByIdAPI = await getUserById(userName);  //Envio en username en vez de la ID.
+                    return res.status(200).json(userByIdAPI);
+                } else {
+                    throw new Error('Username inválido');
+                }
+
+            }
+        } catch (error: any) {
+            await dbDisconnect();
+            return res.status(400).json({ error: error.message})
+        }
+    break;
     case "PUT":
         try {
             const { id } = query;
@@ -42,7 +66,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     email,
                     birthdate, 
                     age 
-                });
+                }
+            );
 
             if (updatedUser.acknowledged){
                 await dbDisconnect();
