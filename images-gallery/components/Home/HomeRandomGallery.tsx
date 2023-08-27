@@ -197,14 +197,14 @@ const HomeRandomGallery = () =>{
                 <div className="m-10 w-1/2">
                     <div className="flex h-16 items-center select-none">
                         <Image className="pointer-events-none select-none" width={100} height={100} src="/images/onlylogo.png" alt="logopng"/>
-                        <p className="pl-5 text-4xl font-bold">PicsArt Gallery</p>
+                        <p className="pl-5 text-3xl font-bold">PicsArt Gallery</p>
                     </div>
-                    <p className="text-2xl mt-10 font-bold">*PicsArt Gallery es una aplicación web destinada a almacenar, descargar imágenes y videos libres de uso. 
+                    <p className="text-xl mt-10 font-bold">*PicsArt Gallery es una aplicación web destinada a almacenar, descargar imágenes y videos libres de uso. 
                         <br/>*¡Puedes registrarte o iniciar sesión para subir, descargar y gestionar 
                         tu material visual tanto de imagen como de video!
                     </p>
                 </div>
-                <div className="mt-10 bg-green-900">
+                <div className="mt-10">
                 {slicedPhotos.lastpic.map((image : any)=>{
                     return(<>
                         {imageInfo.id === image.id && (
