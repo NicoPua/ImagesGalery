@@ -23,13 +23,13 @@ export const getUsers = () =>{
   }
 }
 
-/* export const getUserData = (userNameOrUserID) =>{
+export const getUserData = (userNameOrUserID : string) =>{
   return async function( dispatch: any) {
     try {
-      const {data} = await axios.get(`http://localhost:3000/api/users/${userNameOrUserID}`)
+      const { data } = await axios.get(`http://localhost:3000/api/users/${userNameOrUserID}`)
       return dispatch(getUserDetails(data));
     } catch (error) {
       console.log(error);
     }
   }
-} */
+}
