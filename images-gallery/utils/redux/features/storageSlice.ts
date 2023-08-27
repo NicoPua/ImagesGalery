@@ -13,14 +13,17 @@ export const storageSlice = createSlice({
         getAllPhotos: (state, action) => { 
             state.allPhotos = action.payload;
         },
-        getAllUsers: (state, action) =>{
+        getAllUsers: (state, action) => {
             state.allUsers = action.payload;
         },
-        getUserDetails: (state,action) =>{
+        getUserDetails: (state,action) => {
             state.userDetails = {...action.payload}
+        },
+        cleanUserDetails: (state) => {
+            state.userDetails = {}
         }
     }
 });
 
-export const { getAllPhotos, getAllUsers, getUserDetails } = storageSlice.actions;
+export const { getAllPhotos, getAllUsers, getUserDetails, cleanUserDetails } = storageSlice.actions;
 export default storageSlice.reducer;

@@ -1,5 +1,7 @@
 import axios from "axios";
-import { getAllPhotos, getAllUsers, getUserDetails } from "./features/storageSlice";
+import { cleanUserDetails, getAllPhotos, getAllUsers, getUserDetails } from "./features/storageSlice";
+
+//ACTION CREATORS
 
 export const getPhotos = () => {
   return async function(dispatch:any){
@@ -24,10 +26,20 @@ export const getUsers = () =>{
 }
 
 export const getUserData = (userNameOrUserID : string) =>{
-  return async function( dispatch: any) {
+  return async function(dispatch: any) {
     try {
       const { data } = await axios.get(`http://localhost:3000/api/users/${userNameOrUserID}`)
       return dispatch(getUserDetails(data));
+    } catch (error) {
+      console.log(error);
+    }
+  }
+}
+
+export const cleanUserData = () =>{
+  return async function (dispatch : any) {
+    try {
+      return dispatch(cleanUserDetails());
     } catch (error) {
       console.log(error);
     }
