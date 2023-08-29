@@ -1,9 +1,9 @@
-import Image from "next/image"
+import { Spinner } from '@chakra-ui/react'
 
 export const Loading = () => {
     return (
-        <div>
-            <Image src="/images/logo.png" width={200} height={200} alt="Loading"/>
+        <div className='w-full h-screen flex justify-center items-center'>
+            <Spinner color='red.500' size='xl'/>
         </div>
     )
 }
