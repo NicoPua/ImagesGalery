@@ -111,7 +111,7 @@ const HomeRandomGallery = () =>{
                                         width={60}
                                         height={60}/>
                                     <div className="w-3/4 pl-5 pt-2">
-                                        <Link href={`/users/${image.user_profile.id}`}>    
+                                        <Link href={`/users/${image.user_profile.username}`}>    
                                             <h2 className="text-xl font-bold truncate hover:underline">{image.user_profile.username}</h2>
                                         </Link>
                                         <p className="text-sm">Fecha de publicación: {image.uploaded_on.slice(0,10)}</p>
@@ -160,7 +160,7 @@ const HomeRandomGallery = () =>{
                                         width={60}
                                         height={60}/>
                                     <div className="w-3/4 pl-5 pt-2">
-                                        <Link href={`/users/${image.user_profile.id}`}>    
+                                        <Link href={`/users/${image.user_profile.username}`}>    
                                             <h2 className="text-xl font-bold truncate hover:underline">{image.user_profile.username}</h2>
                                         </Link>
                                         <p className="text-sm">Fecha de publicación: {image.uploaded_on.slice(0,10)}</p>
@@ -219,7 +219,7 @@ const HomeRandomGallery = () =>{
                                         width={60}
                                         height={60}/>
                                     <div className="w-3/4 pl-5 pt-2">
-                                        <Link href={`/users/${image.user_profile.id}`}>
+                                        <Link href={`/users/${image.user_profile.username}`}>
                                             <h2 className="text-xl font-bold truncate hover:underline">{image.user_profile.username}</h2>
                                         </Link>
                                         <p className="text-sm">Fecha de publicación: {image.uploaded_on.slice(0,10)}</p>
@@ -237,10 +237,12 @@ const HomeRandomGallery = () =>{
                                 </div>
                         )}                           
                         <div 
+                            
                             onMouseEnter={()=>setImageInfo({...image})}
                             onMouseLeave={()=>setImageInfo({})}
                             >
                             <Image 
+                            onClick={()=> console.log(image)}
                                 src={image.urls.full_resolution}
                                 width={450}
                                 height={500}
