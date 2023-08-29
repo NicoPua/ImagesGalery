@@ -4,6 +4,7 @@ import Link from "next/link";
 import { getPhotos } from "@/utils/redux/actions";
 import { useAppDispatch, useAppSelector } from "@/utils/redux/hooks";
 import { useEffect, useState } from "react";
+import { Loading } from "../Loading/loading";
 
 const HomeRandomGallery = () =>{
     const allPhotos = useAppSelector((state)=> state.storageReducer.allPhotos)
@@ -24,6 +25,9 @@ const HomeRandomGallery = () =>{
 
     return(
         <div className="p-2">
+            {(allPhotos.length === 0)?<>
+                <Loading/>
+            </>:<>
             <div className="flex mb-10">
                 <div className="pl-24 pt-20 w-1/2">
                     <h1 className="font-bold text-3xl">Fotos de stock gratuitas</h1>
@@ -252,6 +256,7 @@ const HomeRandomGallery = () =>{
                 })}  
                 </div>
             </div>
+            </>}
         </div>
     )
 }
