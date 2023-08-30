@@ -15,8 +15,7 @@ const UserInformationFromAPI = ({userData} : any) =>{
     };
     
     return(<>
-        <h1 className="mt-16" onClick={()=> console.log(userData)}>adasffdsdfsaa</h1>
-        <div className="w-full p-10">
+        <div className="mt-20 w-full p-10">
             <div className="gap-5 flex p-10 mb-10 bg-gray-900 text-white shadow-2xl rounded-2xl justify-around">
                 <div className="flex">
                     <Image 
@@ -29,11 +28,11 @@ const UserInformationFromAPI = ({userData} : any) =>{
                 </div>
                 <div className="flex flex-col justify-around w-1/2">
                     <Link target="_blank" rel="noopener noreferrer" className="w-fit hover:underline" href={`${userData.link}`}>
-                        <h1 className="text-2xl">@{userData.username}</h1>
+                        <h1 className="text-3xl font-bold">@{userData.username}</h1>
                     </Link>
-                    <h1 className="my-1">{userData.name}</h1>
-                    <h1 className="my-1">Ubicación: {userData.location}</h1>
-                    <h1>Bio: {userData.bio}</h1>
+                    <h1 className="my-1 text-xl">{userData.name}</h1>
+                    <h1 className="my-1">Ubicación: {userData.location? userData.location : "Sin especificar."}</h1>
+                    <h1>Bio: {userData.bio? userData.bio : "Sin descripción."}</h1>
                 </div>
                 <div className="flex flex-col justify-around">
                     <h1>Photos: {userData.total_photos}</h1>
@@ -42,6 +41,7 @@ const UserInformationFromAPI = ({userData} : any) =>{
                     <h1>Latest update: {userData.updated_at?.slice(0,10)}</h1>
                 </div>
                 <div className="bg-white p-2 flex flex-col justify-around items-center rounded shadow-2xl">
+                    {userData.link?  
                     <Link href={`${userData.link}`}
                         target="_blank" rel="noopener noreferrer">
                         <Image 
@@ -52,7 +52,9 @@ const UserInformationFromAPI = ({userData} : any) =>{
                             alt="personal page"
                         />
                     </Link>
+                    :<></>}
 
+                    {userData.social.portfolio_url? 
                     <Link href={`${userData.social.portfolio_url}`}
                         target="_blank" rel="noopener noreferrer">
                         <Image
@@ -63,7 +65,9 @@ const UserInformationFromAPI = ({userData} : any) =>{
                             alt="porfolio" 
                         />
                     </Link>
+                    :<></>}
 
+                    {userData.social.instagram_username?
                     <Link href={`https://www.instagram.com/${userData.social.instagram_username}/`}
                         target="_blank" rel="noopener noreferrer">
                         <Image 
@@ -74,7 +78,9 @@ const UserInformationFromAPI = ({userData} : any) =>{
                             alt="instagram"
                         />
                     </Link>
+                    :<></>}
 
+                    {userData.social.twitter_username?
                     <Link href={`https://twitter.com/${userData.social.twitter_username}`}
                         target="_blank" rel="noopener noreferrer">
                         <Image 
@@ -85,6 +91,7 @@ const UserInformationFromAPI = ({userData} : any) =>{
                             alt="twitter"
                         />
                     </Link>
+                    :<></>}
                 </div>
             </div>
             <div className="pl-10 w-1/4 h-12 flex justify-around items-center">
@@ -148,13 +155,15 @@ const UserInformationFromAPI = ({userData} : any) =>{
                                     onMouseEnter={() => handleMouseEnter(index)}
                                     onMouseLeave={handleMouseLeave}
                                 >
-                                    <Image width={450} height={500} src={image.urls.full_resolution} alt="photo"/>
+                                    <Link href={`/view/${image.id}`}>
+                                        <Image width={450} height={500} src={image.urls.full_resolution} alt="photo"/>
+                                    </Link>
                                 </div>
                             </div>
                             </>)
                         })}
                     </>):(<>
-                        <h1>Faltan agregar videos</h1>
+                        <h1 className="p-10">Videos no disponibles.</h1>
                     </>)}
                 </div>
             </div>
