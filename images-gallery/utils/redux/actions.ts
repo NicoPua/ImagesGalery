@@ -1,5 +1,5 @@
 import axios from "axios";
-import { cleanUserDetails, getAllPhotos, getAllUsers, getUserDetails } from "./features/storageSlice";
+import { cleanUserDetails, getAllPhotos, getAllUsers, getImageByID, getUserDetails } from "./features/storageSlice";
 
 //ACTION CREATORS
 
@@ -13,6 +13,17 @@ export const getPhotos = () => {
     }
   };
 };
+
+export const getPhotoByID = (id: string) => {
+  return async function (dispatch : any) {
+    try {
+      const { data } = await axios.get(`http://localhost:3000/api/photos/${id}`)
+      return dispatch(getImageByID(data))
+    } catch (error) {
+      console.log(error)
+    }
+  }
+}
 
 export const getUsers = () =>{
   return async function(dispatch : any){
