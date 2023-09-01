@@ -34,7 +34,7 @@ const NavBar = () =>{
                 <Link 
                     className="hover:bg-white hover:text-black w-1/3 h-full flex justify-center items-center
                     transition-all ease-in-out duration-200"
-                    href="/">
+                    href="/uploadphoto">
                     <p>Upload Image</p>
                 </Link>
                 <Link

@@ -4,11 +4,12 @@ import { ChakraBaseProvider, extendBaseTheme } from '@chakra-ui/react'
 import type { AppProps } from 'next/app'
 import chakraTheme from '@chakra-ui/theme'
 
-const { Spinner } = chakraTheme.components
+const { Spinner, Input } = chakraTheme.components
 
 const theme = extendBaseTheme({
   components: {
     Spinner,
+    Input
   },
 })
 

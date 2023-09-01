@@ -17,6 +17,7 @@
     "autoprefixer": "10.4.14",
     "axios": "^1.4.0",
     "cloudinary": "^1.40.0",
+    "formidable": "^3.5.1",
     "mongoose": "^7.4.0",
     "next": "13.4.9",
     "postcss": "8.4.25",
