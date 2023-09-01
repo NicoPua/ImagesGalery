@@ -18,7 +18,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             try {
 
                 if(isValidObjectId(id)){        //Pregunto si la ID recibida por QUERY es del tipo "ObjectID".
-                    const photoDB = await Photo.findOne({ _id: id });
+                    const photoDB = await Photo.findOne({ _id: id }).populate(
+                        "user",
+                        "_id name firstname lastname profilepic email"
+                    );
                     await dbDisconnect();
                     return res.status(200).json(photoDB);
                  }else{

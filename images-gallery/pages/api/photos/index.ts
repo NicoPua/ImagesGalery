@@ -4,7 +4,9 @@ import { dbConnect, dbDisconnect } from '@/utils/mongoose'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import cleanAPIData from '@/aux-functions/cleanAPIData';
 import validationPostData from '@/aux-functions/validationPostData';
+import { uploadCl } from '@/utils/cloudinary/cloudinaryConfig'
 
+const formidable = require("formidable");
 const Photo = require("@/models/Photo");
 
 //ENDPOINT /api/photos
@@ -14,7 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const { 
     method,
-    body,
+    body
   } = req;
 
   const { UNSPLASH_ACCESS_KEY } = process.env;
@@ -49,24 +51,24 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     
     case "POST":
       try {
-        const { description, user, location, image, rating, likes, reviews } = body;
-        
-        if(!description || !user){
-          return res.status(400).json({ error: "Faltan datos por completar."});
-        }
+        const { description, user, image, location, rating, likes, reviews } = body;
 
+        if(!description || !user || !image){
+          throw new Error("Faltan datos por completar.");
+        }
+        
         const fechaActual = new Date;
         const bodyData : BodyInformation = { description, uploaded_on: fechaActual, user, location, image, rating, likes, reviews }
         const errorMsg: string = validationPostData(bodyData);
         if(errorMsg.length !== 0){
-          return res.status(400).json({ error: errorMsg })
+          throw new Error(errorMsg); 
         }
-
+        console.log(bodyData);
         const newPhoto = new Photo(bodyData);
-        const validationPhoto = newPhoto.validateSync();
-        if(validationPhoto){
+        const invalidPhoto = newPhoto.validateSync();
+        if(invalidPhoto){
           await dbDisconnect();
-          return res.status(400).json({ error: validationPhoto.errors[Object.keys(validationPhoto.errors)[0]].message});
+          throw new Error (invalidPhoto.errors[Object.keys(invalidPhoto.errors)[0]].message);
         }else{
           await newPhoto.save();
           await dbDisconnect();
@@ -74,6 +76,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
       } catch (error: any) {
         await dbDisconnect();
+        console.log(error)
         return res.status(400).json({error: error.message})
       }
     break;
@@ -90,7 +93,7 @@ export interface BodyInformation{
   uploaded_on: Date,
   user: object,
   location: string,
-  image: string,
+  image: any,
   rating: number,
   likes: number,
   reviews: string

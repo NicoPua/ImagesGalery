@@ -90,7 +90,7 @@ const HomeRandomGallery = () =>{
                                 <Image
                                     key={index}
                                     src={image.urls.full_resolution} 
-                                    alt="new photo1" 
+                                    alt="new photo" 
                                     width={450} 
                                     height={500}
                                 />
