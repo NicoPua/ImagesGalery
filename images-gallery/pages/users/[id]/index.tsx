@@ -25,27 +25,29 @@ const UserInformationById = () =>{
 export default UserInformationById;
 
 interface UserDataInterface{
-    id?: string,
-    updated_at?: string, 
-    username?: string, 
-    name?: string, 
-    bio?: string, 
-    location?: string, 
-    link?: string, 
-    profile_image?: any,
-    total_likes?: number, 
-    total_photos?: number, 
-    social?: any, 
-    photos?: any, 
+    //FromAPI
+    id: string,
+    updated_at: string, 
+    username: string, 
+    name: string, 
+    bio: string, 
+    location: string, 
+    link: string, 
+    profile_image: any,
+    total_likes: number, 
+    total_photos: number, 
+    social: any, 
+    photos: any, 
     downloads?: number
 
-    _id?: string,
-    firstname?: string,
-    lastname?: string,
-    age?: number,
-    birthdate?: string,
-    profilepic?: string,
-    email?: string,
-    deleted?: boolean,
-    active?: boolean
+    //From DB
+    _id: string,
+    firstname: string,
+    lastname: string,
+    age: number,
+    birthdate: string,
+    profilepic: string,
+    email: string,
+    deleted: boolean,
+    active: boolean
 }

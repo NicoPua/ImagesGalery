@@ -8,14 +8,17 @@ import { useEffect } from "react";
 import Link from "next/link";
 
 const ViewImage = () =>{
-    const photoByID = useAppSelector((state)=> state.storageReducer.imageDetails);
+    const photoByID : any = useAppSelector((state)=> state.storageReducer.imageDetails);
     const dispatch = useAppDispatch();
     const router = useRouter();
     const { idPhoto } : { idPhoto?: string } = router.query;
 
     useEffect(()=>{
-        dispatch(getPhotoByID(idPhoto!))
-    },[])
+        if (idPhoto) {
+            dispatch(getPhotoByID(idPhoto!))
+        }
+    },[idPhoto])
+
     return(
         <Layout title="Full Image | PicsArt Gallery" description="Full resolution image and all description about that.">
             {('_id' in photoByID)? 
@@ -41,7 +44,7 @@ const ViewImage = () =>{
                         </div>
                         <div className="w-1/2 flex justify-end items-center">
                             <h1 className="pr-10">Uploaded on: {photoByID.uploaded_on.slice(0,10)}</h1>
-                            <Link href={photoByID.urls.download}>
+                            <Link href={`${photoByID.urls.download}`}>
                                 <Image 
                                     className="bg-gray-600 p-3 rounded-xl hover:bg-white transition-all ease-in-out" 
                                     src="/images/descargar.png" 
@@ -53,7 +56,7 @@ const ViewImage = () =>{
                         </div>
                     </div>     
                     <div className="bg-gray-300 mb-10 mr-10 ml-10 p-10 flex flex-col items-center shadow-2xl">                 
-                        <Image width={700} height={720} src={photoByID.urls.full_resolution} alt="full_resolution_image"/>
+                        <Image width={700} height={720} src={`${photoByID.urls.full_resolution}`} alt="full_resolution_image"/>
                         <div className="w-full mt-10 flex justify-start">
                             <p className="font-bold">Description:&nbsp;&nbsp;</p><p>{photoByID.description}</p> 
                         </div>     
@@ -77,11 +80,79 @@ const ViewImage = () =>{
                         </div>                
                     </div>
                 </div>
-            </>):(
+            </>): <>
                 <Loading />
-            )}
+            </>}       
         </Layout>
     )
 }
 
 export default ViewImage;
+
+
+
+/* type AllData = PhotoIDFrom | object;
+
+interface PhotoIDFrom{
+    //API
+    id?: string,
+    uploaded_on?: string,
+    description?: string,
+    urls?: any,
+    links?: string,
+    likes?: number,
+    user_profile: UserProfileInterface,
+    location?: any,
+    views?: number,
+    downloads?: number
+
+    //DB
+    _id?: string,
+    user?: any,
+    rating?: number,
+    image?: string,
+    reviews?: string,
+    hidden?: boolean
+}
+
+interface UserProfileInterface{
+    id?: string,
+    username?: string,
+    name?: string,
+    links?: any,
+    profile_image?: any,
+    social?: any
+} */
+
+/* type AllData = PhotoIDFrom | object;
+
+interface PhotoIDFrom{
+    //API
+    id?: string,
+    uploaded_on?: string,
+    description?: string,
+    urls?: any,
+    links?: string,
+    likes?: number,
+    user_profile: UserProfileInterface,
+    location?: any,
+    views?: number,
+    downloads?: number
+
+    //DB
+    _id?: string,
+    user?: any,
+    rating?: number,
+    image?: string,
+    reviews?: string,
+    hidden?: boolean
+}
+
+interface UserProfileInterface{
+    id?: string,
+    username?: string,
+    name?: string,
+    links?: any,
+    profile_image?: any,
+    social?: any
+} */
