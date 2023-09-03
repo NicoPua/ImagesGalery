@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import validationUserData from "@/aux-functions/validationUserData";
+import validationUserData from "@/aux-functions/validations/validationUserData";
 import { dbConnect, dbDisconnect } from "@/utils/mongoose";
 
 const User = require('../../../models/User')

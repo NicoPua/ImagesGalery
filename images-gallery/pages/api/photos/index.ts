@@ -3,10 +3,8 @@ import axios from 'axios';
 import { dbConnect, dbDisconnect } from '@/utils/mongoose'
 import type { NextApiRequest, NextApiResponse } from 'next'
 import cleanAPIData from '@/aux-functions/cleanAPIData';
-import validationPostData from '@/aux-functions/validationPostData';
-import { uploadCl } from '@/utils/cloudinary/cloudinaryConfig'
+import validationPostData from '@/aux-functions/validations/validationPostData';
 
-const formidable = require("formidable");
 const Photo = require("@/models/Photo");
 
 //ENDPOINT /api/photos
