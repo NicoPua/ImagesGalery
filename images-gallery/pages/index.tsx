@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import Layout from '@/components/Layout'
-import BackgroundHome from '@/components/BackgroundHome'
+import BackgroundHome from '@/components/Home/BackgroundHome'
 import HomeRandomGallery from '@/components/Home/HomeRandomGallery'
 import { getUsers } from "@/utils/redux/actions";
 import { useEffect } from "react";
