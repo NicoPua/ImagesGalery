@@ -6,6 +6,7 @@ import { useAppDispatch } from '@/utils/redux/hooks'
 import { postPhotoOnCloudinary, postNewPhotoOnDB } from '@/utils/redux/actions'
 import { Loading } from '@/components/Loading/loading'
 import { useRouter } from 'next/router'
+import validationNewPhoto from '@/aux-functions/validations/validationNewPhoto'
 
 export default function UploadPhoto() {
   const router = useRouter();
@@ -24,12 +25,18 @@ export default function UploadPhoto() {
     reviews: "muchas reviews"
   });
 
+  const [errors, setErrors] = useState({
+    description: "",  
+    location: "",
+    flag: true
+  })
+
   const handleChange = (event: any) => {
     const value = event.target.value;
     const prop = event.target.name;
 
     setState({...state, [prop]: value});
-    //AGREGAR VALIDATION.
+    setErrors(validationNewPhoto({...state, [prop]: value}))
   }
 
   const handleFileUpload = (event : any) => {
@@ -46,21 +53,21 @@ export default function UploadPhoto() {
 
   const handleSubmit = async (event : React.FormEvent<HTMLButtonElement>) =>{
     event.preventDefault();
-    console.log(state)
-    const formData = new FormData;
-    formData.append('file', state.image);
-    formData.append('upload_preset', "picsart_gallery")
-
-    setLoading(true);
-    //CARGANDO
-    const response = await dispatch(postPhotoOnCloudinary(formData));
-    setState({...state, image: response.secure_url})
-    await dispatch(postNewPhotoOnDB(state));
-    setSure(false);
-    setLoading(false);
-    console.log(state);
-    //AGREGAR VALIDATIONS, si hay algo fuera de lugar, que se envie una alert.
-    //router.push("/users/${idUser}")
+    if(!errors.flag){
+      const formData = new FormData;
+      formData.append('file', state.image);
+      formData.append('upload_preset', "picsart_gallery")
+  
+      setLoading(true);
+      const response = await dispatch(postPhotoOnCloudinary(formData));
+      setState({...state, image: response.secure_url})
+      await dispatch(postNewPhotoOnDB(state));
+      setSure(false);
+      setLoading(false);
+      //FIN DE CARGA
+      console.log(state);
+      //router.push("/users/${idUser}")
+    }
   }
 
   return (
@@ -70,22 +77,24 @@ export default function UploadPhoto() {
           event.preventDefault()
           setSure(true)}
           }
-          className='mt-20 w-5/6 flex bg-gray-500 p-10 shadow-2xl rounded border-black border-double border-8 bg-opacity-40'
+          className='mt-20 mb-20 w-5/6 flex bg-gray-500 p-10 shadow-2xl rounded border-black border-double border-8 bg-opacity-40'
         >
           <div className='flex flex-col w-1/2'>
             <label className="block text-md font-medium text-gray-900 dark:text-white">User ID</label>
-            <Input className='my-3' value={state.user} name='user' onChange={handleChange} placeholder='UserID' size='md' />
+            <Input className='my-2' value={state.user} name='user' onChange={handleChange} placeholder='UserID' size='md' />
             <label className="block text-md font-medium text-gray-900 dark:text-white">Description</label>
-            <Input className='my-3' value={state.description} name='description' onChange={handleChange} placeholder='Description' size='md' />
+            <Input className='my-2' value={state.description} name='description' onChange={handleChange} placeholder='Description' size='md' />
+            {errors.description? <p className='text-red-600 mb-5'>{errors.description}</p> : <></>}
             <label className="block text-md font-medium text-gray-900 dark:text-white">Location</label>
-            <Input className='my-3' value={state.location} name='location' onChange={handleChange} placeholder='Location' size='md' />
+            <Input className='my-2' value={state.location} name='location' onChange={handleChange} placeholder='Location' size='md' />
+            {errors.location? <p className='text-red-600 mb-5'>{errors.location}</p> : <></>}
             <div className='w-full mt-3'>
               <label className="block mb-2 text-md font-medium text-gray-900 dark:text-white">Upload file</label>
               <input onChange={handleFileUpload} className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" type="file"/>
               <p className="mt-1 text-sm text-gray-500 dark:text-gray-300">SVG, PNG, JPG or JPEG.</p>
             </div>
             <div className='flex justify-center'>
-              {(imgPreview === "")
+              {(imgPreview === "") || (errors.flag === true)
               ? <button disabled className='w-fit p-3 mt-5 text-white font-bold bg-gray-400 rounded-xl transition-all ease-in-out border-2'>Upload Image</button>
               : <button className='w-fit p-3 mt-5 text-white font-bold hover:text-black bg-gray-800 hover:bg-green-400 rounded-xl transition-all ease-in-out border-2 '>Upload Image</button>
               }
