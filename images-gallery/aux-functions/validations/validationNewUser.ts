@@ -1,4 +1,4 @@
-const validationNewUser = ({name, firstname, lastname, password,  email, birthdate} : any) => {
+const validationNewUser = ({name, firstname, lastname, password, re_password, email , birthdate} : any) => {
     const onlyLettersAndNumbers = /^[a-zA-Z0-9]+$/;
     const onlyLetters = /^[a-zA-Z]+$/;
     const onlyEmails = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -54,6 +54,11 @@ const validationNewUser = ({name, firstname, lastname, password,  email, birthda
         error.flag = true;
     }
 
+    if(re_password !== password){
+        error.re_password = "- Las passwords deben coincidir.";
+        error.flag = true;
+    }
+
     if(email.length === 0){
         error.email = "- El e-mail es requerido.";
         error.flag = true;
@@ -63,7 +68,7 @@ const validationNewUser = ({name, firstname, lastname, password,  email, birthda
     }
 
     if(birthdate.length === 0){
-        error.birthdate = "- La birthday es requerida.";
+        error.birthdate = "- La birthdate es requerida.";
         error.flag = true;
     }
 
@@ -80,6 +85,5 @@ export interface FormRegister{
     re_password: string,
     email: string,
     birthdate: string,
-    age?: number,
-    flag?: boolean
+    flag: boolean
 }
