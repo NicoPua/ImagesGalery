@@ -1,16 +1,17 @@
 import { Schema, model, models, Document, Model} from 'mongoose'
 
 interface UserDocument extends Document {
-    firstname: string;
-    lastname: string;
-    name: string;
-    password: string;
-    email: string;
-    profilepic: string;
-    birthdate: Date;
-    age?: number;
-    active: boolean;
-    deleted: boolean;
+    firstname: string,
+    lastname: string,
+    name: string,
+    password: string,
+    email: string,
+    profilepic: string,
+    birthdate: Date,
+    salt: string,
+    validator: string,
+    active: boolean,
+    deleted: boolean,
   }
 
 const userSchema = new Schema<UserDocument>(
@@ -47,8 +48,13 @@ const userSchema = new Schema<UserDocument>(
             type: Date,
             required: [true, "La fecha de nacimiento es requerida"],
         },
-        age: { 
-            type: Number
+        salt: {
+            type: String,
+            default: ""
+        },
+        validator: {
+            type: String,
+            default: ""
         },
         active: {
             type: Boolean,

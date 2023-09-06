@@ -72,6 +72,17 @@ export const getUserData = (userNameOrUserID : string) =>{
   }
 }
 
+export const postNewUser = (formData : any) => {
+  return async function () {
+    try {
+      const { data } = await axios.post(`http://localhost:3000/api/users`, formData)
+      return data;
+    } catch (error : any) {
+      console.log(error.response.data.error);
+    }
+  }
+}
+
 export const cleanUserData = () =>{
   return async function (dispatch : any) {
     try {
