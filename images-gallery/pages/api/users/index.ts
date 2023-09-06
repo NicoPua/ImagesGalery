@@ -1,8 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import validationUserData from "@/aux-functions/validations/validationUserData";
 import { dbConnect, dbDisconnect } from "@/utils/mongoose";
+import { encryptPass, verifyPassword } from '@/utils/lib/lib';
+import { mailOptions, transporter } from '@/utils/nodemailer/sendEmailValidation';
+import { sendedEmail } from '@/utils/nodemailer/sendedEmail';
 
 const User = require('../../../models/User')
+
+const { APP_URL } = process.env;
 
 interface queryObj {
   deleted: object,
@@ -51,18 +56,53 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     case 'POST':
       try {
-        let { name, firstname, lastname, password, email, birthdate, profilepic, age } = body;
-        const bodyInfo : userData = { name, firstname, lastname, password, email, birthdate, profilepic, age};
+        let { name, firstname, lastname, password, email, birthdate } = body;
 
-        const existingUser = await User.findOne({email})
-        if(existingUser){
-          res.status(200).json({error: "El E-mail ingresado se encuentra en uso."})
+        //Pass
+        const { encryptedPassword, newSalt} : any = await encryptPass(password);
+
+        const passwordMatch : Promise<boolean> = await verifyPassword(
+          password, 
+          encryptedPassword, 
+          newSalt
+        ) as Promise<boolean>;
+
+        if (!passwordMatch) {
+          await dbDisconnect();
+          return res.status(400).json({ success: false, msg: "La contraseña es incorrecta" });
         }
+        let validatorEncode = newSalt.toString("base64");
+        let validator = encodeURIComponent(validatorEncode);
+
+        //------------------
+        const bodyInfo : userData = { 
+          name, 
+          firstname, 
+          lastname, 
+          password: encryptedPassword,
+          email,
+          birthdate,
+          salt: newSalt,
+          validator: validator
+        };
+
+        /* const existingUser = await User.findOne({email})
+        if(existingUser){
+          return res.status(200).json({ success: false, msg: "El E-mail ingresado se encuentra en uso."})
+        } */
+        
+        const options : object = mailOptions("nicopua7@gmail.com")  //CAMBIAR POR 'email' cuando esté listo.
+        await transporter.sendMail({
+          ...options,
+          subject: `${firstname} ${lastname} (${name})`,
+          text: "PicsArt Register",
+          html: sendedEmail(validator, email, APP_URL)
+        });
 
         const newUser = new User(bodyInfo);
-        
+        console.log(newUser)
         const errorData: string = validationUserData(bodyInfo);
-        if(errorData.length !== 0) return res.status(400).json({ error: errorData});
+        if(errorData.length !== 0) throw new Error(errorData);
 
         const validationUser = newUser.validateSync();
         if(validationUser){
@@ -71,12 +111,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         } 
         await newUser.save();
         await dbDisconnect();
-        return res.status(200).json({ success: "Datos correctos" });
+        return res.status(200).json({ success: true, msg: "Usuario registrado con éxito." });
 
       } catch (error:any) {
         console.log(error);
         await dbDisconnect();
-        return res.status(400).json({ error: error.message });
+        return res.status(400).json({ success: false, error: error.message });
       }
     break;
 
@@ -93,7 +133,7 @@ export interface userData{
   lastname: string,
   password: string,
   email: string, 
-  birthdate: string, 
-  profilepic: string, 
-  age: number
+  birthdate: string,
+  salt: string,
+  validator: string,
 }
