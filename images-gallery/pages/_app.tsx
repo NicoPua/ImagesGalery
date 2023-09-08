@@ -3,6 +3,7 @@ import { Providers } from '@/utils/redux/providers'
 import { ChakraBaseProvider, extendBaseTheme } from '@chakra-ui/react'
 import type { AppProps } from 'next/app'
 import chakraTheme from '@chakra-ui/theme'
+import { SessionProvider } from 'next-auth/react'
 
 const { Spinner, Input } = chakraTheme.components
 
@@ -13,12 +14,14 @@ const theme = extendBaseTheme({
   },
 })
 
-export default function App({ Component, pageProps }: AppProps) {
+export default function App({ Component, pageProps: {session, ...pageProps} }: AppProps) {
   return (
-    <Providers>
-      <ChakraBaseProvider theme={theme}>
-        <Component {...pageProps} />     
-      </ChakraBaseProvider>   
-    </Providers>
+    <SessionProvider session={session}>
+      <Providers>
+        <ChakraBaseProvider theme={theme}>
+          <Component {...pageProps} />     
+        </ChakraBaseProvider>   
+      </Providers>
+    </SessionProvider>
   )
 }
