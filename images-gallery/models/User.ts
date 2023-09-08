@@ -62,7 +62,7 @@ const userSchema = new Schema<UserDocument>(
         },
         deleted: { 
             type: Boolean,
-            default: true
+            default: false
         }
     },
     { timestamps: false, versionKey: false }
