@@ -7,9 +7,11 @@ import React, { useState } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { Spinner } from '@chakra-ui/react'
 import validationLoginForm from "@/aux-functions/validations/validationLoginForm";
+import { useRouter } from "next/router";
 
 const Login = () => {
     const {data} = useSession() 
+    const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [formData , setFormData] = useState({
         username: "",
@@ -33,15 +35,15 @@ const Login = () => {
 
     const handleGoogleSignIn = async () =>{
         await signIn("google", {
-            redirect: false,        //Modificar para que redireccione a la última URL en la que estuvo el usuario.
-            callbackUrl: "/users/login",
+            redirect: true,        //Modificar para que redireccione a la última URL en la que estuvo el usuario.
+            callbackUrl: "/",
         });
     }
 
     const handlerSubmit = async (event : React.FormEvent<HTMLFormElement>) =>{
         setLoading(true);
         event.preventDefault();
-        const result = await signIn("credentials", {
+        const result : any = await signIn("credentials", {
           username: formData.username,
           password: formData.password,
           redirect: false,          //Modificar para que redireccione a la última URL en la que estuvo el usuario.
@@ -49,18 +51,17 @@ const Login = () => {
         });
         console.log(result);
         
-        if (result!.error) {
+        if (result['error']) {
             setFormData({
               ...formData,
               loginError: result!.error,
             });
-          } else {
+        } else {
             console.log(result);
-            console.log("Acceso consedido")
+            console.log("Acceso consedido")    
+            router.push('/');
         }
         setLoading(false);
-        console.log(data);
-        
     }
 
     return (
