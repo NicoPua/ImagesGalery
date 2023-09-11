@@ -1,19 +1,25 @@
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import { Box } from "@chakra-ui/react";
+import { useRouter } from "next/router";
 import { useState } from "react";
 
 const NavBar = () =>{
     const { data } = useSession();
     const user = data?.user;
+    console.log(data);  
+    //HACER QUE, EN CASO DE QUE HAYA UN MAIL QUE YA EXISTA UNA VEZ INGRESADO CON GOOGLE, LA APP ENVIE UN ALERT.
     
+    const router = useRouter();
+
     const [isClicked, setIsClicked] = useState(false);
 
     const showOptions = () =>{
-        setIsClicked(prevIsClicked => !prevIsClicked)
-        console.log(isClicked);
-        
+        setIsClicked(prevIsClicked => !prevIsClicked)        
+    }
+
+    const handleSignOut = async () =>{
+        await signOut({ redirect: true , callbackUrl: "/users/login" });
     }
 
     return (
@@ -74,9 +80,9 @@ const NavBar = () =>{
                                 <Image className="p-2" width={40} height={10} src="/images/editprofile.png" alt="edit profile"/>
                                 <Link href="/editprofile" className="text-sm py-2 pl-3">Edit Profile</Link>
                             </div>
-                            <div className="flex items-center hover:bg-red-400 hover:text-white">
+                            <div onClick={handleSignOut} className="flex items-center hover:bg-red-400 hover:text-white">
                                 <Image className="p-2" width={40} height={10} src="/images/logout.png" alt="Log out"/>
-                                <Link href="/logout" className="text-sm py-2 pl-3">Log Out</Link>
+                                Log Out
                             </div>
                         </div>
                     </>:<>   
@@ -88,10 +94,10 @@ const NavBar = () =>{
                     className="w-1/6 rounded-xl p-1 flex justify-center items-center
                         bg-gray-700 border-2 border-white hover:bg-white hover:border-black hover:text-black
                         transition-all ease-in-out duration-200
-                        ">
-                    <Link href="/users/login">
-                        <p className="font-bold text-lg w-full">Login / Register</p>
-                    </Link>
+                        "
+                        onClick={()=> router.push('/users/login')}
+                    >
+                        <p className="flex justify-center items-center cursor-pointer font-bold text-lg w-full">Login / Register</p>
                 </div>
             </>}
         </nav>
