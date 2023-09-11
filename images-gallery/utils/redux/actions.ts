@@ -1,5 +1,5 @@
 import axios from "axios";
-import { cleanUserDetails, getAllPhotos, getAllUsers, getImageByID, getUserDetails } from "./features/storageSlice";
+import { cleanAllImagesToSearch, cleanUserDetails, getAllPhotos, getAllUsers, getImageByID, getUserDetails, saveDataSearched } from "./features/storageSlice";
 
 //ACTION CREATORS
 
@@ -90,5 +90,22 @@ export const cleanUserData = () =>{
     } catch (error) {
       console.log(error);
     }
+  }
+}
+
+export const searchPhoto = (textToSearch: any) => {
+  return async function (dispatch : any) {
+    try {
+      const { data } = await axios.get(`http://localhost:3000/api/search?data=${textToSearch}`)
+      return dispatch(saveDataSearched(data))
+    } catch (error) {
+      console.log(error);
+    }
+  }
+}
+
+export const cleanSearchedImages = () =>{
+  return async function (dispatch : any) {
+    return dispatch(cleanAllImagesToSearch());
   }
 }

@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
     allPhotos: [],
+    searchedPhotos: [],
     allUsers: [],
     userDetails: {},
     imageDetails: {}
@@ -25,9 +26,15 @@ export const storageSlice = createSlice({
         },
         cleanUserDetails: (state) => {
             state.userDetails = {};
+        },
+        saveDataSearched: (state,action) =>{
+            state.searchedPhotos = action.payload;
+        },
+        cleanAllImagesToSearch: (state) => {
+            state.searchedPhotos = []
         }
     }
 });
 
-export const { getAllPhotos, getAllUsers, getUserDetails, cleanUserDetails, getImageByID} = storageSlice.actions;
+export const { getAllPhotos, getAllUsers, getUserDetails, cleanUserDetails, getImageByID, saveDataSearched, cleanAllImagesToSearch} = storageSlice.actions;
 export default storageSlice.reducer;
