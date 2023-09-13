@@ -1,15 +1,19 @@
+import { getLoguedUserInfo } from "@/utils/redux/actions";
+import { useAppDispatch, useAppSelector } from "@/utils/redux/hooks";
 import { signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const NavBar = () =>{
     const { data } = useSession();
     const user = data?.user;
-    console.log(data);  
-    //HACER QUE, EN CASO DE QUE HAYA UN MAIL QUE YA EXISTA UNA VEZ INGRESADO CON GOOGLE, LA APP ENVIE UN ALERT.
     
+    const loguedUser : any = useAppSelector((state)=> state.storageReducer.loguedUser)
+    const dispatch = useAppDispatch() 
+    //HACER QUE, EN CASO DE QUE HAYA UN MAIL QUE YA EXISTA UNA VEZ INGRESADO CON GOOGLE, LA APP ENVIE UN ALERT.
+
     const router = useRouter();
 
     const [isClicked, setIsClicked] = useState(false);
@@ -21,6 +25,10 @@ const NavBar = () =>{
     const handleSignOut = async () =>{
         await signOut({ redirect: true , callbackUrl: "/users/login" });
     }
+
+    useEffect(()=>{
+        dispatch(getLoguedUserInfo(user?.email!))
+    },[user?.email])
 
     return (
         <nav className="inset-0 z-10 w-full h-14 flex flex-row justify-around items-center shadow-xl bg-gray-900 text-gray-100">
@@ -74,7 +82,7 @@ const NavBar = () =>{
                         <div className="flex flex-col bg-white mt-44 w-40 absolute bg-white text-black border-black border-r-2 border-b-2 border-l-2">
                             <div className="flex items-center hover:bg-gray-500 hover:text-white">
                                 <Image className="p-2" width={40} height={10} src="/images/user.png" alt="user image"/>
-                                <Link href="/userprofile" className="text-sm py-2 pl-3">My Profile</Link>
+                                <Link href={`/users/${loguedUser._id}`} className="text-sm py-2 pl-3">My Profile</Link>
                             </div>
                             <div className="flex items-center hover:bg-gray-500 hover:text-white">
                                 <Image className="p-2" width={40} height={10} src="/images/editprofile.png" alt="edit profile"/>
