@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import validationUserData from "@/aux-functions/validations/validationUserData";
 import { dbConnect, dbDisconnect } from "@/utils/mongoose";
-import { userData } from "@/pages/api/users"
 import { isValidObjectId } from 'mongoose';
 import { getUserById } from '@/aux-functions/usernameAPI/getUserById';
 
@@ -41,19 +40,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const userFounded = await User.findById(id);
             if(!userFounded) throw new Error("No se han encontrado usuarios con esta ID.");
             
-            const { firstname, lastname, email, birthdate, age} = body;
-            const bodyInfo: userData = { 
+            const { firstname, lastname, email, birthdate} = body;
+            const bodyInfo: any = { 
                 firstname , 
                 lastname, 
                 email, 
                 birthdate, 
-                age, 
                 name: userFounded.name , 
                 password: userFounded.password, 
-                profilepic: userFounded.profilepic
             };
 
-            if(!firstname || !lastname || !email || !birthdate || !age) throw new Error("Faltan datos por ingresar.")
+            if(!firstname || !lastname || !email || !birthdate ) throw new Error("Faltan datos por ingresar.")
             
             const errorMsg : string = validationUserData(bodyInfo);
             if(errorMsg) return res.status(400).json({error: errorMsg})
@@ -65,7 +62,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     lastname, 
                     email,
                     birthdate, 
-                    age 
                 }
             );
 

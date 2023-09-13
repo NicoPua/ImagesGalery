@@ -14,14 +14,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const { 
     method,
-    body
+    body,
+    query
   } = req;
 
   const { UNSPLASH_ACCESS_KEY } = process.env;
 
   switch (method) {
     case "GET":
+      const {idUser} = query;
+
       try {
+        if(idUser){     //Pregunto si hay una ID de un usuario por QUERY.
+          const queryOptions = {
+            user: idUser
+          }
+          const userPhotos = await Photo.find(queryOptions)
+          return res.status(200).json(userPhotos) 
+        }
+
         const response = await axios.get(`https://api.unsplash.com/photos/?client_id=${UNSPLASH_ACCESS_KEY}`);
         const cleanedAPIData : any = await cleanAPIData(response.data);
 

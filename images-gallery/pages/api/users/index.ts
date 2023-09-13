@@ -22,7 +22,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   switch (method) {
     case "GET":
       try {
-        let { firstname } = query;
+        let { firstname, email } : any = query;
+        if(email){
+          const decodedEmail = decodeURIComponent(email);
+          const userByEmail = await User.findOne({email: decodedEmail});
+          return res.status(200).json(userByEmail);
+        }
+
         const queryOptions: queryObj = {      //Condiciones para filtrar documentos de la database 
           deleted: { $ne: true },
           active: { $ne: false },
