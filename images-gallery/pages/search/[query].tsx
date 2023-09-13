@@ -1,3 +1,4 @@
+import Paginado from "@/components/Home/Paginado";
 import Layout from "@/components/Layout";
 import { Loading } from "@/components/Loading/loading";
 import { cleanSearchedImages, searchPhoto } from "@/utils/redux/actions";
@@ -14,20 +15,50 @@ const SearchByName = () =>{
     const {query} = router.query;
     
     const [visibleImageIndex, setVisibleImageIndex] = useState<number | null>(null);
+    const [newSearchQuery, setNewSearchQuery] = useState("");
 
-    const handleMouseEnter = (index: number) => {
-        setVisibleImageIndex(index);
-      };
-      const handleMouseLeave = () => {
-          setVisibleImageIndex(null);
-      };
+
+    //Paginado
+    const [currentPage , setCurrentPage] = useState(1);
+    const [imgsXPag] = useState(15);    
+    const lastGameIndex = currentPage * imgsXPag;
+    const firstGameIndex = lastGameIndex - imgsXPag;
+    const currentGames = resultsFounded.slice(firstGameIndex,lastGameIndex); 
+
+    //------------------
 
     useEffect(()=>{
         dispatch(searchPhoto(query));
         return() => { 
             dispatch(cleanSearchedImages());
         }
-    },[])
+    },[query])
+
+    const handleMouseEnter = (index: number) => {
+        setVisibleImageIndex(index);
+    };
+
+    const handleMouseLeave = () => {
+        setVisibleImageIndex(null);
+    };
+
+    const handleChange = async (event : any) =>{
+        if(newSearchQuery.length !== 0){
+            const pressEnter = event.key;
+    
+            if(pressEnter === 'Enter'){
+                await dispatch(cleanSearchedImages());
+                router.push(`/search/${newSearchQuery}`)
+            }
+        }
+    }
+
+    const handleClick = async () => {
+        if(newSearchQuery.length !== 0){
+            await dispatch(cleanSearchedImages());
+            router.push(`/search/${newSearchQuery}`)
+        }
+      }
 
     return(
         <Layout title={`${query} | PicsArt Gallery`} description="Find your favorite image">
@@ -38,10 +69,12 @@ const SearchByName = () =>{
                         {/* <option className='bg-white'>🎬 Videos</option> */}
                     </select>
                     <input 
+                        onChange={(e) => setNewSearchQuery(e.target.value)}
+                        onKeyDown={handleChange}
                         className='mx-5 w-4/5 h-14 font-semibold text-xl focus:outline-none'
                         placeholder={`Búsqueda: ${query}`}
                     />
-                    <button className='hover:bg-gray-100 hover:rounded-2xl'>
+                    <button onClick={handleClick} className='hover:bg-gray-100 hover:rounded-2xl'>
                     <Image
                         className='p-3 h-14 pointer-events-none'
                         src="/images/lupa.png"
@@ -53,13 +86,13 @@ const SearchByName = () =>{
                 </div>
                 <div className="mt-10 mb-10 w-11/12 flex flex-col justify-center items-center bg-gray-300 rounded-2xl shadow-2xl">
                     <h1 className="text-xl font-semibold my-5">Resultados encontrados de {`'${query}' (${resultsFounded?.length})`}</h1>
-
+                    <Paginado currentPage={currentPage} setCurrentPage={setCurrentPage} imgsXPag={imgsXPag} totalCantImgs={resultsFounded.length} />
                     <div className="w-full h-full flex justify-center items-center flex-wrap">
                         {resultsFounded.length === 0 
                         ?<>
                             <Loading />
                         </>:<>
-                            {resultsFounded.map((image : any, index: number)=>{
+                            {currentGames.map((image : any, index: number)=>{
                                 return(
                                     <div
                                         key={index}
@@ -118,6 +151,7 @@ const SearchByName = () =>{
                             }
                         </>
                         }
+                        <Paginado currentPage={currentPage} setCurrentPage={setCurrentPage} imgsXPag={imgsXPag} totalCantImgs={resultsFounded.length} />
                     </div>
                 </div>
             </div>

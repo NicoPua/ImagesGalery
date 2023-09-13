@@ -2,23 +2,22 @@ import Layout from "@/components/Layout";
 import { Loading } from "@/components/Loading/loading";
 import { useUserDetails } from "@/hooks/useUserDetails";
 import UserInformationFromAPI from "@/components/Users/UserInformationFromAPI";
+import UserInformationFromDB from "@/components/Users/UserInformationFromDB";
 
-type UserData = UserDataInterface | {};
+type UserData = any;
 
 const UserInformationById = () =>{
     const userData : UserData = useUserDetails();
 
     return (
         <Layout title="User | PicsArt" description="Informacion about a user by id">
-            {('_id' in userData)? 
-                (<>
-                    <h1 className="mt-16" onClick={()=> console.log(userData)}>adasffdsdfsaa</h1>
-                </>)
-            : ('id' in userData)?(<>              
-                <UserInformationFromAPI userData={userData}/>          
-            </>):(
-                <Loading />
-            )}
+            {('_id' in userData)
+            ?   <UserInformationFromDB userData={userData} />
+            : ('id' in userData)
+            ?   <UserInformationFromAPI userData={userData}/>          
+            
+            :   <Loading />
+            }
         </Layout>
     )
 }
