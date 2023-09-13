@@ -1,5 +1,5 @@
 import axios from "axios";
-import { cleanAllImagesToSearch, cleanUserDetails, getAllPhotos, getAllUsers, getImageByID, getUserDetails, saveDataSearched } from "./features/storageSlice";
+import { cleanAllImagesToSearch, cleanUserDetails, getAllPhotos, getAllUserPhotosFromDB, getAllUsers, getImageByID, getInfoUser, getUserDetails, saveDataSearched } from "./features/storageSlice";
 
 //ACTION CREATORS
 
@@ -7,7 +7,7 @@ export const getPhotos = () => {
   return async function(dispatch:any){
     try {
       const { data } = await axios.get(`http://localhost:3000/api/photos`);
-      return dispatch(getAllPhotos(data));
+      return await dispatch(getAllPhotos(data));
     } catch (error:any) {
       console.log(error)
     }
@@ -18,7 +18,7 @@ export const getPhotoByID = (id: string) => {
   return async function (dispatch : any) {
     try {
       const { data } = await axios.get(`http://localhost:3000/api/photos/${id}`)
-      return dispatch(getImageByID(data))
+      return await dispatch(getImageByID(data))
     } catch (error) {
       console.log(error);
     }
@@ -50,13 +50,36 @@ export const postPhotoOnCloudinary = (formData : any) => {
   }
 }
 
+export const getLoguedUserInfo = (email : string) => {
+  return async function (dispatch : any) {
+    try {
+      const { data } = await axios.get(`http://localhost:3000/api/users?email=${email}`)
+      return await dispatch(getInfoUser(data))
+    } catch (error : any) {
+      console.log(error.message);
+    }
+  }
+}
+
 export const getUsers = () =>{
   return async function(dispatch : any){
     try {
       const { data } = await axios.get(`http://localhost:3000/api/users`);
-      return dispatch(getAllUsers(data));
-    } catch (error) {
-      console.log(error);
+      return await dispatch(getAllUsers(data));
+    } catch (error:any) {
+      console.log(error.message);
+    }
+  }
+}
+
+export const getUserPhotosOnlyFromDB = (idUser : string) =>{
+  return async function (dispatch: any) {
+    try {
+      const { data } = await axios.get(`http://localhost:3000/api/photos?idUser=${idUser}`)
+      const filterData = await data.filter((photo : any)=> photo.hidden === false );
+      return await dispatch(getAllUserPhotosFromDB(filterData))
+    } catch (error:any) {
+      console.log(error.message);
     }
   }
 }
@@ -65,7 +88,7 @@ export const getUserData = (userNameOrUserID : string) =>{
   return async function(dispatch: any) {
     try {
       const { data } = await axios.get(`http://localhost:3000/api/users/${userNameOrUserID}`)
-      return dispatch(getUserDetails(data));
+      return await dispatch(getUserDetails(data));
     } catch (error) {
       console.log(error);
     }
@@ -86,7 +109,7 @@ export const postNewUser = (formData : any) => {
 export const cleanUserData = () =>{
   return async function (dispatch : any) {
     try {
-      return dispatch(cleanUserDetails());
+      return await dispatch(cleanUserDetails());
     } catch (error) {
       console.log(error);
     }
@@ -97,7 +120,7 @@ export const searchPhoto = (textToSearch: any) => {
   return async function (dispatch : any) {
     try {
       const { data } = await axios.get(`http://localhost:3000/api/search?data=${textToSearch}`)
-      return dispatch(saveDataSearched(data))
+      return await dispatch(saveDataSearched(data))
     } catch (error) {
       console.log(error);
     }
@@ -106,6 +129,6 @@ export const searchPhoto = (textToSearch: any) => {
 
 export const cleanSearchedImages = () =>{
   return async function (dispatch : any) {
-    return dispatch(cleanAllImagesToSearch());
+    return await dispatch(cleanAllImagesToSearch());
   }
 }
