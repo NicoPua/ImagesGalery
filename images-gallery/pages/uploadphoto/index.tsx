@@ -1,3 +1,4 @@
+import { FcApproval } from "react-icons/fc";
 import Image from 'next/image'
 import Layout from '@/components/Layout'
 import { Input } from '@chakra-ui/react'
@@ -11,15 +12,17 @@ import validationNewPhoto from '@/aux-functions/validations/validationNewPhoto'
 export default function UploadPhoto() {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const [success, setSuccess] = useState(false);
   const [sure, setSure] = useState(false);
   const [loading, setLoading] = useState(false);
   const [imgPreview, setImgPreview] = useState("");
 
-  const [state,setState] = useState({ 
+  const [state,setState] : any = useState({ 
     user: "",
     description: "",  
     location: "", 
     image: "",
+    file: null,
     rating: 0, 
     likes: 0, 
     reviews: "muchas reviews"
@@ -43,10 +46,10 @@ export default function UploadPhoto() {
     const fileToUpload = event.target.files[0];
     if(fileToUpload){
       const imageUrl = URL.createObjectURL(fileToUpload);
-      setState({...state, image: fileToUpload});
+      setState({...state, file: fileToUpload});
       setImgPreview(imageUrl)
     }else{
-      setState({...state, image: ""});
+      setState({...state, file: null});
       setImgPreview("");
     }
   }
@@ -55,7 +58,7 @@ export default function UploadPhoto() {
     event.preventDefault();
     if(!errors.flag){
       const formData = new FormData;
-      formData.append('file', state.image);
+      formData.append('file', state.file);
       formData.append('upload_preset', "picsart_gallery")
   
       setLoading(true);
@@ -66,7 +69,9 @@ export default function UploadPhoto() {
       setLoading(false);
       //FIN DE CARGA
       console.log(state);
-      //router.push("/users/${idUser}")
+      console.log(response);
+      setSuccess(true);
+      //
     }
   }
 
@@ -150,6 +155,34 @@ export default function UploadPhoto() {
         <>
           <div className="w-full h-full fixed top-0 left-0 bg-black/50 z-40 flex flex-col items-center justify-center">
             <Loading />
+          </div>
+        </>
+      )}
+      {success && (
+        <>
+          <div
+            className="w-full h-full fixed top-0 left-0 bg-black/50 z-40 flex flex-col items-center justify-center"
+          >
+            <div className="bg-white w-[40rem] pl-10 pr-10 pt-5 rounded-md flex flex-col overflow-hidden shadow-2xl">
+              <div className="flex items-center justify-center h-8">
+                <FcApproval className="h-10"/>
+                <p className="font-semibold text-xl">&nbsp; Success Upload!</p>&nbsp;Now you can find the image on your profile.
+              </div>
+              <div className="p-4 flex flex-row gap-3 items-center justify-end">
+                <button
+                  value="si"
+                  className="font-bold bg-gray-300 px-5 py-1 rounded hover:bg-gray-50 hover:text-black border-2 border-black"
+                  onClick={() => router.push('/')}>
+                  Ir al Home
+                </button>
+                <button
+                  value="no"
+                  className="font-bold bg-gray-300 px-4 py-1 rounded hover:bg-gray-50 hover:text-black border-2 border-black"
+                  onClick={() => setSuccess(false)}>
+                  Volver
+                </button>
+              </div>
+            </div>
           </div>
         </>
       )}
