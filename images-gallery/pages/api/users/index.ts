@@ -26,6 +26,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if(email){
           const decodedEmail = decodeURIComponent(email);
           const userByEmail = await User.findOne({email: decodedEmail});
+          if(!userByEmail){
+            return res.status(200).json({error: "El usuario ingresó con Google, debe registrarse.", googleEmail: true})
+          }
           return res.status(200).json(userByEmail);
         }
 
@@ -62,7 +65,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     case 'POST':
       try {
-        let { name, firstname, lastname, password, email, birthdate } = body;
+        let { name, firstname, lastname, password, email, birthdate, profilepic, googleLogin} = body;
 
         //Pass
         const { encryptedPassword, newSalt} : any = await encryptPass(password);
@@ -89,15 +92,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           email,
           birthdate,
           salt: newSalt,
-          validator: validator
+          validator: validator,
+          profilepic: (profilepic && profilepic !== "")? profilepic : "https://res.cloudinary.com/dacl2du1v/image/upload/v1684330929/userAvt_tkcm8u.png",
+          active: googleLogin? true : false,
         };
 
-        /* const existingUser = await User.findOne({email})
+        const existingUser = await User.findOne({email})
         if(existingUser){
           return res.status(200).json({ success: false, msg: "El E-mail ingresado se encuentra en uso."})
-        } */
+        }
         
-        const options : object = mailOptions("nicopua7@gmail.com")  //CAMBIAR POR 'email' cuando esté listo.
+        const options : object = mailOptions(email)  //CAMBIAR POR 'email' cuando esté listo.
         await transporter.sendMail({
           ...options,
           subject: `${firstname} ${lastname} (${name})`,
@@ -142,4 +147,6 @@ export interface userData{
   birthdate: string,
   salt: string,
   validator: string,
+  profilepic?: string,
+  active?: boolean
 }
