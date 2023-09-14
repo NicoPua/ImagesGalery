@@ -11,7 +11,8 @@ const UserInformationFromDB = ({userData} : any) => {
 
     const userPhotos = useAppSelector((state)=> state.storageReducer.userFromDBPhotos);
     const dispatch = useAppDispatch();
-
+    console.log(userPhotos);
+    
     const [isClicked, setIsClicked] = useState("Fotos");
     const [visibleImageIndex, setVisibleImageIndex] = useState<number | null>(null);
 
