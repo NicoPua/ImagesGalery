@@ -50,11 +50,30 @@ export const postPhotoOnCloudinary = (formData : any) => {
   }
 }
 
-export const getLoguedUserInfo = (email : string) => {
+export const getLoguedUserInfo = (user : any) => {
   return async function (dispatch : any) {
     try {
-      const { data } = await axios.get(`http://localhost:3000/api/users?email=${email}`)
-      return await dispatch(getInfoUser(data))
+      const { data } = await axios.get(`http://localhost:3000/api/users?email=${user.email}`)
+      if(data.googleEmail){
+        const today = new Date;
+        const cleanedDate = today.toString().split(' ');
+
+        const googleNameArray = user.name.split(' ');
+        const defaultUserData = { 
+          name: user.name, 
+          firstname: googleNameArray[0]? googleNameArray[0] : "Undefined", 
+          lastname: googleNameArray[1]? googleNameArray[1] : "Undefined", 
+          password: user.name.trim(), 
+          email: user.email, 
+          birthdate: `${cleanedDate[1]}-${cleanedDate[2]}-${cleanedDate[3]}`,
+          profilepic: user.image,
+          googleLogin: true
+        }
+        const userPosted = await dispatch(postNewUser(defaultUserData));
+        return await dispatch(getInfoUser(userPosted))
+      }else{
+        return await dispatch(getInfoUser(data))
+      }
     } catch (error : any) {
       console.log(error.message);
     }
