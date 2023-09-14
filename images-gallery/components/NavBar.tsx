@@ -8,14 +8,15 @@ import { useState, useEffect } from "react";
 
 const NavBar = () =>{
     const { data } = useSession();
-    const user = data?.user;
+    const user : any = data?.user;
     
     const loguedUser : any = useAppSelector((state)=> state.storageReducer.loguedUser)
     const dispatch = useAppDispatch() 
-    //HACER QUE, EN CASO DE QUE HAYA UN MAIL QUE YA EXISTA UNA VEZ INGRESADO CON GOOGLE, LA APP ENVIE UN ALERT.
 
     const router = useRouter();
-
+    //console.log(data?.user);
+    //console.log(loguedUser);
+    
     const [isClicked, setIsClicked] = useState(false);
 
     const showOptions = () =>{
@@ -27,8 +28,8 @@ const NavBar = () =>{
     }
 
     useEffect(()=>{
-        dispatch(getLoguedUserInfo(user?.email!))
-    },[user?.email])
+        dispatch(getLoguedUserInfo(user))
+    },[user])
 
     return (
         <nav className="inset-0 z-10 w-full h-14 flex flex-row justify-around items-center shadow-xl bg-gray-900 text-gray-100">
