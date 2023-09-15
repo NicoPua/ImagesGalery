@@ -2,6 +2,7 @@ import BackgroundRegister from "@/components/Home/BackgroundRegister"
 import Image from "next/image";
 import { Input } from "@chakra-ui/react";
 import { FcGoogle } from "react-icons/fc";
+import { BiChevronLeft } from "react-icons/bi";
 import Link from "next/link";
 import React, { useState } from "react";
 import { signIn, useSession } from "next-auth/react";
@@ -68,6 +69,12 @@ const Login = () => {
         <BackgroundRegister>
             <div className="w-full flex justify-around items-center">
                 <div className="w-1/4 border-2 bg-gradient-to-t from-red-400 to-gray-400 flex flex-col justify-center items-center pb-10 pt-5 rounded-2xl shadow-2xl">
+                    <Link href="/">
+                        <div className="flex items-center">
+                            <BiChevronLeft />
+                            <p>Volver</p>
+                        </div>
+                    </Link>
                     <Image width={200} height={200} src="/images/logo.png" alt="Picsart logo"/>
                     <h1 className="font-bold">Login</h1>
                     <form onSubmit={handlerSubmit}>
