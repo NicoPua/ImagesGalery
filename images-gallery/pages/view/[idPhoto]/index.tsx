@@ -1,11 +1,12 @@
 import Layout from "@/components/Layout";
 import Image from "next/image";
 import { Loading } from "@/components/Loading/loading";
-import { getPhotoByID } from "@/utils/redux/actions";
+import { clearImageDetails, getPhotoByID } from "@/utils/redux/actions";
 import { useAppDispatch, useAppSelector } from "@/utils/redux/hooks";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import Link from "next/link";
+import ViewPhotoFromDb from "@/components/Users/ViewPhotoFromDB";
 
 const ViewImage = () =>{
     const photoByID : any = useAppSelector((state)=> state.storageReducer.imageDetails);
@@ -17,13 +18,16 @@ const ViewImage = () =>{
         if (idPhoto) {
             dispatch(getPhotoByID(idPhoto!))
         }
+        return () => {
+            dispatch(clearImageDetails())
+        }
     },[idPhoto])
 
     return(
         <Layout title="Full Image | PicsArt Gallery" description="Full resolution image and all description about that.">
             {('_id' in photoByID)? 
                 (<>
-                    <h1 className="mt-16" onClick={()=> console.log(photoByID)}>Soy un botón para imagenes de la DB.</h1>
+                    <ViewPhotoFromDb photoByID={photoByID} />
                 </>)
             : ('id' in photoByID)?(<>  
                 <div className="mt-24 w-full flex flex-col">
