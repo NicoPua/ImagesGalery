@@ -20,6 +20,9 @@ export const storageSlice = createSlice({
         getImageByID: (state,action) => {
             state.imageDetails = { ...action.payload };
         },
+        cleanImageDetail: (state) => {
+            state.imageDetails = {};
+        },
         getAllUsers: (state, action) => {
             state.allUsers = action.payload;
         },
@@ -44,5 +47,5 @@ export const storageSlice = createSlice({
     }
 });
 
-export const { getAllPhotos, getAllUsers, getUserDetails, cleanUserDetails, getImageByID, saveDataSearched, cleanAllImagesToSearch, getAllUserPhotosFromDB, getInfoUser} = storageSlice.actions;
+export const { getAllPhotos, getAllUsers, getUserDetails, cleanUserDetails, getImageByID, cleanImageDetail, saveDataSearched, cleanAllImagesToSearch, getAllUserPhotosFromDB, getInfoUser} = storageSlice.actions;
 export default storageSlice.reducer;

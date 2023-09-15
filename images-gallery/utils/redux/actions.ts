@@ -1,5 +1,5 @@
 import axios from "axios";
-import { cleanAllImagesToSearch, cleanUserDetails, getAllPhotos, getAllUserPhotosFromDB, getAllUsers, getImageByID, getInfoUser, getUserDetails, saveDataSearched } from "./features/storageSlice";
+import { cleanAllImagesToSearch, cleanImageDetail, cleanUserDetails, getAllPhotos, getAllUserPhotosFromDB, getAllUsers, getImageByID, getInfoUser, getUserDetails, saveDataSearched } from "./features/storageSlice";
 
 //ACTION CREATORS
 
@@ -21,6 +21,16 @@ export const getPhotoByID = (id: string) => {
       return await dispatch(getImageByID(data))
     } catch (error) {
       console.log(error);
+    }
+  }
+}
+
+export const clearImageDetails = () =>{
+  return async function (dispatch: any) {
+    try {
+      return await dispatch(cleanImageDetail())
+    } catch (error : any) {
+      console.log(error.message);
     }
   }
 }
