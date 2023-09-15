@@ -30,6 +30,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             user: idUser
           }
           const userPhotos = await Photo.find(queryOptions)
+          .populate(
+            "user",
+            "_id name firstname lastname profilepic email"
+          );
           return res.status(200).json(userPhotos) 
         }
 
