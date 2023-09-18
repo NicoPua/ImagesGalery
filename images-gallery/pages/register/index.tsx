@@ -96,9 +96,9 @@ const Register = () => {
                     <div className="w-1/4 overflow-y-auto h-[80vh] bg-gradient-to-b from-red-400 to-orange-300 border-2 flex flex-col items-center py-10 shadow-2xl rounded-2xl">
                         <p className="font-bold">Register</p>
                         <div className="flex text-xs mt-5">
-                                <p className="text-gray-800 mr-2">Do you already have an account?</p>
-                                <p className="font-bold hover:text-blue-500 transition-all ease-in-out">Log In</p>
-                            </div>
+                            <p className="text-gray-800 mr-2">Do you already have an account?</p>
+                            <p className="font-bold hover:text-blue-500 transition-all ease-in-out">Log In</p>
+                        </div>
                         <div className="w-full p-10">
                             <label className="block text-sm font-medium text-gray-900 dark:text-white">Username</label>
                             <div className="mb-5 flex flex-col h-fit">
@@ -113,7 +113,7 @@ const Register = () => {
                                 : <></>}
                             </div>
 
-                        <label className="block text-sm font-medium text-gray-900 dark:text-white">First name</label>
+                            <label className="block text-sm font-medium text-gray-900 dark:text-white">First name</label>
                             <div className="mb-5 flex flex-col h-fit">
                                 <div className="flex items-center">
                                     <Image className="mr-2 h-full" width={20} height={20} src="/images/name.png" alt="User icon"/>
