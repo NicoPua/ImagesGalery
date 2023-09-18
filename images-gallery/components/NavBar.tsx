@@ -87,7 +87,7 @@ const NavBar = () =>{
                             </div>
                             <div className="flex items-center hover:bg-gray-500 hover:text-white">
                                 <Image className="p-2" width={40} height={10} src="/images/editprofile.png" alt="edit profile"/>
-                                <Link href="/editprofile" className="text-sm py-2 pl-3">Edit Profile</Link>
+                                <Link href={`/users/editprofile/${loguedUser._id}`} className="text-sm py-2 pl-3">Edit Profile</Link>
                             </div>
                             <div onClick={handleSignOut} className="flex items-center hover:bg-red-400 hover:text-white">
                                 <Image className="p-2" width={40} height={10} src="/images/logout.png" alt="Log out"/>
