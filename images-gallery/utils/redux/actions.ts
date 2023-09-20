@@ -70,7 +70,7 @@ export const getLoguedUserInfo = (user : any) => {
 
         const googleNameArray = user.name.split(' ');
         const defaultUserData = { 
-          name: user.name, 
+          name: user.name.trim(), 
           firstname: googleNameArray[0]? googleNameArray[0] : "Undefined", 
           lastname: googleNameArray[1]? googleNameArray[1] : "Undefined", 
           password: user.name.trim(), 
