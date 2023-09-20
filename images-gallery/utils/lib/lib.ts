@@ -7,7 +7,9 @@ export const verifyPassword = (password : string, userPassword : string, salt : 
         reject(false);
       } else {
         const encryptedPassword = key.toString("base64");
-        console.log(encryptedPassword)
+        //console.log(encryptedPassword)
+        //console.log(userPassword);
+        
         if (userPassword === encryptedPassword) {
           resolve(true);
         } else {
