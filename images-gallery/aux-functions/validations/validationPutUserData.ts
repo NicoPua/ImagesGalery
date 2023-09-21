@@ -14,7 +14,8 @@ const validationPutUserData = async ({ name, firstname, lastname, password, re_p
         lastname: "",
         email: "",
         birthdate: "",
-        flag: false
+        flag: false,
+        allEqual: false
     }
 
     if(name !== loguedUserData.name){
@@ -62,14 +63,17 @@ const validationPutUserData = async ({ name, firstname, lastname, password, re_p
             errors.flag = true;
         }
 
-        const isEqual = await verifyPassword(password, loguedUserData.password, loguedUserData.salt);
-        console.log(isEqual);
+        const isEqual : any = await verifyPassword(password, loguedUserData.password, loguedUserData.salt);
         
         if(isEqual === false){
             if(password.length < 2 || password.length > 20){
-                    errors.password = "- Debe tener entre 2 & 20 caracteres.",
-                    errors.flag = true
+                errors.password = "- Debe tener entre 2 & 20 caracteres.",
+                errors.flag = true  
             }
+            errors.allEqual = false;
+        }else{
+            errors.allEqual = true;
+            errors.password = "- La contraseña debe ser distinta a la anterior.";
         }
     }
 
@@ -88,6 +92,16 @@ const validationPutUserData = async ({ name, firstname, lastname, password, re_p
             errors.birthdate = "- La birthdate es requerida.";
             errors.flag = true;
         }
+    }
+
+    if( (!password)
+        &&(name === loguedUserData.name) 
+        && (firstname === loguedUserData.firstname) 
+        && (lastname === loguedUserData.lastname) 
+        && (email === loguedUserData.email) 
+        && (birthdate === loguedUserData.birthdate)
+    ){
+        errors.allEqual = true;
     }
 
     return errors;
