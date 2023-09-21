@@ -3,6 +3,7 @@ import validationUserData from "@/aux-functions/validations/validationUserData";
 import { dbConnect, dbDisconnect } from "@/utils/mongoose";
 import { isValidObjectId } from 'mongoose';
 import { getUserById } from '@/aux-functions/usernameAPI/getUserById';
+import { encryptPass, verifyPassword } from '@/utils/lib/lib';
 
 const User = require('../../../models/User')
 
@@ -40,43 +41,82 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const userFounded = await User.findById(id);
             if(!userFounded) throw new Error("No se han encontrado usuarios con esta ID.");
             
-            const { firstname, lastname, email, birthdate} = body;
-            const bodyInfo: any = { 
-                firstname , 
-                lastname, 
-                email, 
-                birthdate, 
-                name: userFounded.name , 
-                password: userFounded.password, 
-            };
+            const { name, firstname, lastname, email, birthdate, password } = body;
 
-            if(!firstname || !lastname || !email || !birthdate ) throw new Error("Faltan datos por ingresar.")
-            
-            const errorMsg : string = validationUserData(bodyInfo);
-            if(errorMsg) return res.status(400).json({error: errorMsg})
+            if(password){
+                const { encryptedPassword, newSalt} : any = await encryptPass(password);
+                const passwordMatch = await verifyPassword(password, encryptedPassword, newSalt);
 
-            const updatedUser = await User.updateOne(
-                { _id: id },
-                {   
-                    firstname,
-                    lastname, 
-                    email,
-                    birthdate, 
+                if(!passwordMatch){
+                    await dbDisconnect();
+                    throw new Error("Ocurrió un error con la contraseña.")
                 }
-            );
 
-            if (updatedUser.acknowledged){
+                const bodyInfo: any = { 
+                    firstname: firstname? firstname : userFounded.firstname, 
+                    lastname: lastname? lastname : userFounded.lastname, 
+                    email: email? email : userFounded.email, 
+                    birthdate: birthdate? birthdate : userFounded.birthdate, 
+                    name: name? name : userFounded.name, 
+                    password: password? encryptedPassword : userFounded.password, 
+                    salt: password? newSalt : userFounded.salt
+                };
+
+                const errorMsg : string = validationUserData(bodyInfo);
+                if(errorMsg) return res.status(400).json({error: errorMsg})
+
+                const updatedUser = await User.updateOne(
+                    { _id: id },
+                    {   
+                        ...bodyInfo
+                    }
+                );
+    
+                if (updatedUser.acknowledged){
+                    await dbDisconnect();
+                    return res.status(200).json({
+                        success: true,
+                        msg: "Los datos se actualizaron con éxito!",
+                    });
+                } 
                 await dbDisconnect();
-                return res.status(200).json({
-                    success: true,
-                    msg: "Los datos se actualizaron con éxito!",
+                return res.status(400).json({
+                    success: false,
+                    error: "No se pudo completar la petición, intentelo más tarde.",
                 });
-            } 
-            await dbDisconnect();
-            return res.status(400).json({
-                success: false,
-                error: "No se pudo completar la petición, intentelo más tarde.",
-            });
+            }else{
+                const bodyInfo: any = { 
+                    firstname: firstname? firstname : userFounded.firstname, 
+                    lastname: lastname? lastname : userFounded.lastname, 
+                    email: email? email : userFounded.email, 
+                    birthdate: birthdate? birthdate : userFounded.birthdate, 
+                    name: name? name : userFounded.name
+                };
+
+                const errorMsg : string = validationUserData(bodyInfo);
+                if(errorMsg) return res.status(400).json({error: errorMsg})
+
+                const updatedUser = await User.updateOne(
+                    { _id: id },
+                    {   
+                        ...bodyInfo
+                    }
+                );
+    
+                if (updatedUser.acknowledged){
+                    await dbDisconnect();
+                    return res.status(200).json({
+                        success: true,
+                        msg: "Los datos se actualizaron con éxito!",
+                    });
+                } 
+
+                await dbDisconnect();
+                return res.status(400).json({
+                    success: false,
+                    error: "No se pudo completar la petición, intentelo más tarde.",
+                });
+            }
         } catch (error: any) {
             await dbDisconnect();
             return res.status(404).json({ error: error.message });
