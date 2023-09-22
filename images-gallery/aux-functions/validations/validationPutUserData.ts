@@ -1,4 +1,4 @@
-import { encryptPass, verifyPassword } from "@/utils/lib/lib";
+import { verifyPassword } from "@/utils/lib/lib";
 
 const validationPutUserData = async ({ name, firstname, lastname, password, re_password, email, birthdate} : any, loguedUserData : any) =>{
     
@@ -87,7 +87,7 @@ const validationPutUserData = async ({ name, firstname, lastname, password, re_p
         }
     }
 
-    if(birthdate !== loguedUserData){
+    if(birthdate !== loguedUserData.birthdate.slice(0,10)){
         if(birthdate.length === 0){
             errors.birthdate = "- La birthdate es requerida.";
             errors.flag = true;
@@ -99,7 +99,7 @@ const validationPutUserData = async ({ name, firstname, lastname, password, re_p
         && (firstname === loguedUserData.firstname) 
         && (lastname === loguedUserData.lastname) 
         && (email === loguedUserData.email) 
-        && (birthdate === loguedUserData.birthdate)
+        && (birthdate.slice(0,10) === loguedUserData.birthdate.slice(0,10))
     ){
         errors.allEqual = true;
     }
