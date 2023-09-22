@@ -135,6 +135,17 @@ export const postNewUser = (formData : any) => {
   }
 }
 
+export const putUserProfile = (id: string, formData : any) => {
+  return async function () {
+    try {
+      const { data } = await axios.put(`http://localhost:3000/api/users/${id}`,formData)
+      return data;
+    } catch (error : any) {
+      console.log(error.message);
+    }
+  }
+}
+
 export const cleanUserData = () =>{
   return async function (dispatch : any) {
     try {
