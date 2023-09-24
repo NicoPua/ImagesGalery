@@ -32,6 +32,7 @@ const SearchByName = () =>{
         return() => { 
             dispatch(cleanSearchedImages());
         }
+    //eslint-disable-next-line
     },[query])
 
     const handleMouseEnter = (index: number) => {

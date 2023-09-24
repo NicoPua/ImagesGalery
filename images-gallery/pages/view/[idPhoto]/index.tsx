@@ -21,6 +21,7 @@ const ViewImage = () =>{
         return () => {
             dispatch(clearImageDetails())
         }
+    //eslint-disable-next-line
     },[idPhoto])
 
     return(

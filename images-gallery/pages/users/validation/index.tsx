@@ -8,7 +8,7 @@ import { useEffect, useState } from "react";
 const Validation = () => {
     const router = useRouter();
     const validator = router.query.c;
-    const email = router.query.m;
+    const email = router.query.m;    
 
     const [state, setState] = useState({
         validator: "",
@@ -25,26 +25,23 @@ const Validation = () => {
               validate: true
             })
           }
-          console.log(state.validate)
         } catch (error) {
-            console.log(state.validate)
             console.log(error);
         }
       };
 
     useEffect(() => {
-        const fetchData = async () =>{
-            if(validator || !state.validate){
-                console.log(validator);
-                console.log(email);
-                await handlevalidate({ validator: validator, email: email })
+        if(validator ||  email){
+            const fetchData = async () =>{
+                if(validator || !state.validate){
+                    await handlevalidate({ validator: validator, email: email })
+                }
             }
+            fetchData();
         }
-        fetchData();
-
         return () => {} 
         //eslint-disable-next-line
-    }, [validator,state.validate])
+    }, [validator, email,state.validate])
 
     return(
         <BackgroundRegister>
@@ -55,7 +52,7 @@ const Validation = () => {
                     ?<>
                         <h1 className="font-bold">¡Validación exitosa!</h1>
                         <h1 className="mt-5">Ahora puede iniciar sesión haciendo&nbsp;
-                            <Link href='/login' className="hover:underline font-semibold hover:text-blue-600">
+                            <Link href='/users/login' className="hover:underline font-semibold hover:text-blue-600">
                                 Click Aquí
                             </Link>
                         </h1>
