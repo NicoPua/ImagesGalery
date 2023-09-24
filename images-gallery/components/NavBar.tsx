@@ -10,7 +10,7 @@ const NavBar = () =>{
     const { data } = useSession();
     const user : any = data?.user;
     
-    const loguedUser : any = useAppSelector((state)=> state.storageReducer.loguedUser)
+    const loguedUser : any = useAppSelector((state)=> state.storageReducer.loguedUser);
     const dispatch = useAppDispatch() 
 
     const router = useRouter();
@@ -28,7 +28,9 @@ const NavBar = () =>{
     }
 
     useEffect(()=>{
-        dispatch(getLoguedUserInfo(user))
+        if(user){
+            dispatch(getLoguedUserInfo(user));
+        }
     },[user])
 
     return (

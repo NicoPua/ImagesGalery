@@ -11,7 +11,7 @@ import { FcApproval } from "react-icons/fc";
 import { FcPicture } from "react-icons/fc";
 
 const EditProfile = () => {
-    const loguedUser : any = useAppSelector((state)=> state.storageReducer.loguedUser)
+    const loguedUser : any = useAppSelector((state)=> state.storageReducer.loguedUser);
     const router = useRouter();
     const dispatch = useAppDispatch()
 
@@ -62,8 +62,11 @@ const EditProfile = () => {
         }
     }
    
-    useEffect(()=>{
-        dispatch(getLoguedUserInfo(loguedUser))
+    useEffect(()=>{       
+        if(loguedUser){
+            dispatch(getLoguedUserInfo(loguedUser))
+        }
+    //eslint-disable-next-line
     },[loguedUser])
 
     return (
@@ -136,12 +139,12 @@ const EditProfile = () => {
                                     : <></>}
                                 </div>
 
-                                <label className="block text-md font-medium text-gray-900 dark:text-white">Birthdate: {loguedUser.birthdate.slice(0,10)}</label>
+                                <label className="block text-md font-medium text-gray-900 dark:text-white">Birthdate: {loguedUser.birthdate? loguedUser.birthdate.slice(0,10) : ""}</label>
                                 <div className="mb-3 flex items-center h-fit">
                                     <Image className="mr-2 pointer-events-none select-none" width={20} height={20} src="/images/birthday.png" alt="User icon"/>
                                     <input
                                         onChange={handleChange}
-                                        value={formData.birthdate.slice(0,10)}
+                                        value={formData.birthdate? formData.birthdate.slice(0,10) : ""}
                                         type="date"
                                         name="birthdate"
                                         className="pl-2 h-8 text-sm form-input w-full rounded border-2 border-white bg-transparent focus:border-2 focus:border-blue-700"
