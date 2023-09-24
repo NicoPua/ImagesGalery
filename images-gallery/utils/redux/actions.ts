@@ -6,7 +6,7 @@ import { cleanAllImagesToSearch, cleanImageDetail, cleanUserDetails, getAllPhoto
 export const getPhotos = () => {
   return async function(dispatch:any){
     try {
-      const { data } = await axios.get(`/api/photos`);
+      const { data } = await axios.get(`api/photos`);
       return await dispatch(getAllPhotos(data));
     } catch (error:any) {
       console.log(error)
@@ -17,7 +17,7 @@ export const getPhotos = () => {
 export const getPhotoByID = (id: string) => {
   return async function (dispatch : any) {
     try {
-      const { data } = await axios.get(`/api/photos/${id}`)
+      const { data } = await axios.get(`api/photos/${id}`)
       return await dispatch(getImageByID(data))
     } catch (error) {
       console.log(error);
@@ -38,7 +38,7 @@ export const clearImageDetails = () =>{
 export const postNewPhotoOnDB = (formState : any) => {
   return async function () {
     try {
-      const { data } = await axios.post("/api/photos",formState)
+      const { data } = await axios.post("api/photos",formState)
       return data;
     } catch (error : any) {
       console.log(error.response.data.error)
@@ -63,7 +63,7 @@ export const postPhotoOnCloudinary = (formData : any) => {
 export const getLoguedUserInfo = (user : any) => {
   return async function (dispatch : any) {
     try {
-      const { data } = await axios.get(`/api/users?email=${user.email}`)
+      const { data } = await axios.get(`api/users?email=${user.email}`)
       if(data.googleEmail){
         const today = new Date;
         const cleanedDate = today.toString().split(' ');
@@ -93,7 +93,7 @@ export const getLoguedUserInfo = (user : any) => {
 export const getUsers = () =>{
   return async function(dispatch : any){
     try {
-      const { data } = await axios.get(`/api/users`);
+      const { data } = await axios.get(`api/users`);
       return await dispatch(getAllUsers(data));
     } catch (error:any) {
       console.log(error.message);
@@ -104,7 +104,7 @@ export const getUsers = () =>{
 export const getUserPhotosOnlyFromDB = (idUser : string) =>{
   return async function (dispatch: any) {
     try {
-      const { data } = await axios.get(`/api/photos?idUser=${idUser}`)
+      const { data } = await axios.get(`api/photos?idUser=${idUser}`)
       const filterData = await data.filter((photo : any)=> photo.hidden === false );
       return await dispatch(getAllUserPhotosFromDB(filterData))
     } catch (error:any) {
@@ -116,7 +116,7 @@ export const getUserPhotosOnlyFromDB = (idUser : string) =>{
 export const getUserData = (userNameOrUserID : string) =>{
   return async function(dispatch: any) {
     try {
-      const { data } = await axios.get(`/api/users/${userNameOrUserID}`)
+      const { data } = await axios.get(`api/users/${userNameOrUserID}`)
       return await dispatch(getUserDetails(data));
     } catch (error) {
       console.log(error);
@@ -127,7 +127,7 @@ export const getUserData = (userNameOrUserID : string) =>{
 export const postNewUser = (formData : any) => {
   return async function () {
     try {
-      const { data } = await axios.post(`/api/users`, formData)
+      const { data } = await axios.post(`api/users`, formData)
       return data;
     } catch (error : any) {
       console.log(error.response.data.error);
@@ -138,7 +138,7 @@ export const postNewUser = (formData : any) => {
 export const putUserProfile = (id: string, formData : any) => {
   return async function () {
     try {
-      const { data } = await axios.put(`/api/users/${id}`,formData)
+      const { data } = await axios.put(`api/users/${id}`,formData)
       return data;
     } catch (error : any) {
       console.log(error.message);
@@ -159,7 +159,7 @@ export const cleanUserData = () =>{
 export const searchPhoto = (textToSearch: any) => {
   return async function (dispatch : any) {
     try {
-      const { data } = await axios.get(`/api/search?data=${textToSearch}`)
+      const { data } = await axios.get(`api/search?data=${textToSearch}`)
       return await dispatch(saveDataSearched(data))
     } catch (error) {
       console.log(error);
