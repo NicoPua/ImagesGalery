@@ -6,9 +6,11 @@ import Link from "next/link";
 import validationNewUser, { FormRegister } from "@/aux-functions/validations/validationNewUser";
 import { postNewUser } from "@/utils/redux/actions";
 import { useAppDispatch } from "@/utils/redux/hooks";
+import { Loading } from "@/components/Loading/loading";
 
 const Register = () => {
     const dispatch = useAppDispatch();
+    const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({ 
         name: "", 
         firstname: "", 
@@ -42,6 +44,7 @@ const Register = () => {
     }
 
     const handlerSubmit = async () =>{
+        setLoading(true);
         const today = new Date;
         const cleanedYear : any = today.toString().slice(11,15);
 
@@ -56,8 +59,9 @@ const Register = () => {
                     ...formData,
                     register: true
                 })
-                return alert(data.msg);
+                setLoading(false);               
             }else{
+                setLoading(false);
                 return alert(data.msg);
             }
         }else{
@@ -196,6 +200,13 @@ const Register = () => {
                     </div>
                 </>}
             </div>
+            {loading && (
+                <>
+                <div className="w-full h-full fixed top-0 left-0 bg-black/50 z-40 flex flex-col items-center justify-center">
+                    <Loading />
+                </div>
+                </>
+            )}
         </BackgroundRegister>
     )
 }
