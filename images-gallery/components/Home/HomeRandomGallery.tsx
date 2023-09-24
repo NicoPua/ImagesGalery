@@ -30,8 +30,11 @@ const HomeRandomGallery = () =>{
     };
 
     useEffect(()=>{
-        dispatch(getPhotos());
-    },[])
+        if(allPhotos.length === 0){
+            dispatch(getPhotos());
+        }
+    //eslint-disable-next-line
+    },[allPhotos.length])
 
     return(
         <div className="p-2">

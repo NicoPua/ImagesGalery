@@ -15,6 +15,7 @@ export const useUserDetails = () => {
         return (()=>{
             dispatch(cleanUserData());
         })
+    //eslint-disable-next-line
     },[id])
 
     return userData;

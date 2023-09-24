@@ -4,18 +4,22 @@ import BackgroundHome from '@/components/Home/BackgroundHome'
 import HomeRandomGallery from '@/components/Home/HomeRandomGallery'
 import { getUsers } from "@/utils/redux/actions";
 import { useEffect } from "react";
-import { useAppDispatch } from '@/utils/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/utils/redux/hooks';
 import { useState } from "react";
 import { useRouter } from 'next/router';
 
 export default function Home() {
+  const allUsers = useAppSelector((state)=> state.storageReducer.allUsers)
   const dispatch = useAppDispatch();
   const [queryToSearch, setQueryToSearch] = useState("");
   const router = useRouter();
 
   useEffect(()=>{
-    dispatch(getUsers());
-  },[])
+    if(allUsers.length === 0){
+      dispatch(getUsers());
+    }
+  //eslint-disable-next-line
+  },[allUsers.length])
 
   const handlePressEnter = (event : any) =>{
     if(queryToSearch.length !== 0){
