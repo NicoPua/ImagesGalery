@@ -30,11 +30,9 @@ const HomeRandomGallery = () =>{
     };
 
     useEffect(()=>{
-        if(allPhotos.length === 0){
-            dispatch(getPhotos());
-        }
+        dispatch(getPhotos()); 
     //eslint-disable-next-line
-    },[allPhotos.length])
+    },[allPhotos])
 
     return(
         <div className="p-2">
@@ -43,7 +41,7 @@ const HomeRandomGallery = () =>{
             </>:<>
             <div className="flex mb-10">
                 <div className="pl-16 pt-20 w-1/2">
-                    <h1 className="font-bold text-3xl">Fotos de stock gratuitas</h1>
+                    <h1 onClick={() => console.log(allPhotos)} className="font-bold text-3xl">Fotos de stock gratuitas</h1>
                 </div>
                 <div className="focus:outline-none pr-16 pt-20 w-1/2 flex justify-end">
                     <select 
