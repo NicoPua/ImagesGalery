@@ -10,6 +10,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     try {
         const allSearchedPhotos = await getAllSearchedPhotos(imgToSearch);
+        if(allSearchedPhotos.length === 0){
+            return res.status(200).json({ notfound: "No se han encontrado imágenes." });
+        }
         return res.status(200).json([...allSearchedPhotos])
     } catch (error : any) {
         await dbDisconnect();
