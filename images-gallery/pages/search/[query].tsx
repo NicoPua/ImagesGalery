@@ -16,19 +16,20 @@ const SearchByName = () =>{
     
     const [visibleImageIndex, setVisibleImageIndex] = useState<number | null>(null);
     const [newSearchQuery, setNewSearchQuery] = useState("");
-
+    const [notFounded, setNotFounded] = useState(false);
 
     //Paginado
     const [currentPage , setCurrentPage] = useState(1);
     const [imgsXPag] = useState(15);    
     const lastGameIndex = currentPage * imgsXPag;
     const firstGameIndex = lastGameIndex - imgsXPag;
-    const currentGames = resultsFounded.slice(firstGameIndex,lastGameIndex); 
+    const currentGames = resultsFounded.length !== 0? resultsFounded.slice(firstGameIndex,lastGameIndex) : []
 
     //------------------
-
+    
+    
     useEffect(()=>{
-        dispatch(searchPhoto(query));
+        dispatch(searchPhoto(query, setNotFounded));
         return() => { 
             dispatch(cleanSearchedImages());
         }
@@ -48,6 +49,7 @@ const SearchByName = () =>{
             const pressEnter = event.key;
     
             if(pressEnter === 'Enter'){
+                setNotFounded(false);
                 await dispatch(cleanSearchedImages());
                 router.push(`/search/${newSearchQuery}`)
             }
@@ -56,6 +58,7 @@ const SearchByName = () =>{
 
     const handleClick = async () => {
         if(newSearchQuery.length !== 0){
+            setNotFounded(false);
             await dispatch(cleanSearchedImages());
             router.push(`/search/${newSearchQuery}`)
         }
@@ -89,10 +92,13 @@ const SearchByName = () =>{
                     <h1 className="text-xl font-semibold my-5">Resultados encontrados de {`'${query}' (${resultsFounded?.length})`}</h1>
                     <Paginado currentPage={currentPage} setCurrentPage={setCurrentPage} imgsXPag={imgsXPag} totalCantImgs={resultsFounded.length} />
                     <div className="w-full h-full flex justify-center items-center flex-wrap">
-                        {resultsFounded.length === 0 
+                        {(notFounded)
+                        ?<>
+                            <h1 className="font-bold mb-10">- No se han encontrado resultados. -</h1>
+                        </> : (resultsFounded.length === 0)
                         ?<>
                             <Loading />
-                        </>:<>
+                        </> : <>
                             {currentGames.map((image : any, index: number)=>{
                                 return(
                                     <div
@@ -147,9 +153,7 @@ const SearchByName = () =>{
                                         </div>
                                     </div>
                                 )
-                            })
-
-                            }
+                            })}
                         </>
                         }
                         <Paginado currentPage={currentPage} setCurrentPage={setCurrentPage} imgsXPag={imgsXPag} totalCantImgs={resultsFounded.length} />

@@ -3,13 +3,14 @@ import Image from 'next/image'
 import Layout from '@/components/Layout'
 import { Input } from '@chakra-ui/react'
 import React, { useState } from 'react'
-import { useAppDispatch } from '@/utils/redux/hooks'
+import { useAppDispatch, useAppSelector } from '@/utils/redux/hooks'
 import { postPhotoOnCloudinary, postNewPhotoOnDB } from '@/utils/redux/actions'
 import { Loading } from '@/components/Loading/loading'
 import { useRouter } from 'next/router'
 import validationNewPhoto from '@/aux-functions/validations/validationNewPhoto'
 
 export default function UploadPhoto() {
+  const loguedUser : any = useAppSelector((state) => state.storageReducer.loguedUser)
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [success, setSuccess] = useState(false);
@@ -17,8 +18,10 @@ export default function UploadPhoto() {
   const [loading, setLoading] = useState(false);
   const [imgPreview, setImgPreview] = useState("");
 
+  const [check, setCheck] = useState(false);
+
   const [state,setState] : any = useState({ 
-    user: "",
+    user: loguedUser? loguedUser._id : "",
     description: "",  
     location: "", 
     image: "",
@@ -65,13 +68,20 @@ export default function UploadPhoto() {
       const response = await dispatch(postPhotoOnCloudinary(formData));
       setState({...state, image: response.secure_url})
       await dispatch(postNewPhotoOnDB(state));
+
+      //FIN DE CARGA
       setSure(false);
       setLoading(false);
-      //FIN DE CARGA
-      console.log(state);
-      console.log(response);
       setSuccess(true);
       //
+    }
+  }
+
+  const handlerCheck = () => {  
+    if(check){
+      setCheck(false)
+    }else{
+      setCheck(true)
     }
   }
 
@@ -85,8 +95,6 @@ export default function UploadPhoto() {
           className='mt-20 mb-20 w-5/6 flex bg-gray-500 p-10 shadow-2xl rounded border-black border-double border-8 bg-opacity-40'
         >
           <div className='flex flex-col w-1/2'>
-            <label className="block text-md font-medium text-gray-900 dark:text-white">User ID</label>
-            <Input className='my-2' value={state.user} name='user' onChange={handleChange} placeholder='UserID' size='md' />
             <label className="block text-md font-medium text-gray-900 dark:text-white">Description</label>
             <Input className='my-2' value={state.description} name='description' onChange={handleChange} placeholder='Description' size='md' />
             {errors.description? <p className='text-red-600 mb-5'>{errors.description}</p> : <></>}
@@ -98,8 +106,13 @@ export default function UploadPhoto() {
               <input onChange={handleFileUpload} className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" type="file"/>
               <p className="mt-1 text-sm text-gray-500 dark:text-gray-300">SVG, PNG, JPG or JPEG.</p>
             </div>
+
+            <div className="mt-10 flex items-center">
+              <input type="checkbox" onChange={handlerCheck}></input>
+              <label className="ml-2 ">PicsArt Gallery tiene mi consentimiento para compartir esta imagen de manera pública.</label>
+            </div>
             <div className='flex justify-center'>
-              {(imgPreview === "") || (errors.flag === true)
+              {(imgPreview === "") || (errors.flag === true) || (!check)
               ? <button disabled className='w-fit p-3 mt-5 text-white font-bold bg-gray-400 rounded-xl transition-all ease-in-out border-2'>Upload Image</button>
               : <button className='w-fit p-3 mt-5 text-white font-bold hover:text-black bg-gray-800 hover:bg-green-400 rounded-xl transition-all ease-in-out border-2 '>Upload Image</button>
               }

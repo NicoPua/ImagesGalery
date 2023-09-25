@@ -156,13 +156,16 @@ export const cleanUserData = () =>{
   }
 }
 
-export const searchPhoto = (textToSearch: any) => {
+export const searchPhoto = (textToSearch: any, setNotFounded : any) => {
   return async function (dispatch : any) {
     try {
       const { data } = await axios.get(`/api/search?data=${textToSearch}`)
+      if(data.notfound){
+        return setNotFounded(true);
+      }
       return await dispatch(saveDataSearched(data))
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      console.log(error.message);
     }
   }
 }
