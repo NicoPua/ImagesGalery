@@ -16,7 +16,9 @@
 - Axios
 
 ## Author
-- Gonzalo Nicolás Pua [@NicoPua](https://github.com/NicoPua)
+- Gonzalo Nicolás Pua
+- GitHub: [@NicoPua](https://github.com/NicoPua)
+- LinkedIn: [@Gonzalo Pua](https://www.linkedin.com/in/gonzalo-pua/)
 
 ## Deployment
 https://picsart-gallery.vercel.app/
