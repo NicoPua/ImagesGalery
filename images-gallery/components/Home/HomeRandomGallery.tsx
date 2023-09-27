@@ -81,6 +81,7 @@ const HomeRandomGallery = () =>{
                                     } w-full absolute flex text-white bg-gradient-to-r from-gray-900`}
                                 >
                                     <Image
+                                        key={index}
                                         className="p-2 w-16 rounded-full pointer-events-none"                                               
                                         src={image.user_profile.profile_image.large} 
                                         alt="profilepic" 
@@ -95,6 +96,7 @@ const HomeRandomGallery = () =>{
                                     <div className="w-1/6 flex justify-center flex items-center select-none">
                                         <Link href={image.urls.download}>
                                             <Image
+                                                key={index}
                                                 className="bg-gray-300 hover:bg-gray-400 p-2 rounded-xl"                                                 
                                                 src="/images/descargar.png" 
                                                 alt="download3" 
@@ -127,7 +129,7 @@ const HomeRandomGallery = () =>{
                     {slicedPhotos.secondpart.map((image : any, index : number)=>{ 
                         return (<>
                             <div
-                                key={index}
+                                key={index+1}
                                 className="relative group"
                                 onMouseEnter={() => setVisibleImgSecondCol(index)}
                                 onMouseLeave={handleMouseLeave}
@@ -140,11 +142,13 @@ const HomeRandomGallery = () =>{
                                     } w-full absolute flex text-white bg-gradient-to-r from-gray-900`}
                                 >
                                     <Image
+                                        key={index+1}
                                         className="p-2 w-16 rounded-full pointer-events-none"                                               
                                         src={image.user_profile.profile_image.large} 
                                         alt="profilepic" 
                                         width={60}
-                                        height={60}/>
+                                        height={60}
+                                    />
                                     <div className="w-3/4 pl-5 pt-2">
                                         <Link href={`/users/${image.user_profile.username}`}>    
                                             <h2 className="text-xl font-bold truncate hover:underline cursor-pointer">{image.user_profile.username}</h2>
@@ -154,11 +158,13 @@ const HomeRandomGallery = () =>{
                                     <div className="w-1/6 flex justify-center flex items-center select-none">
                                         <Link href={image.urls.download}>
                                             <Image
+                                                key={index+1}
                                                 className="bg-gray-300 hover:bg-gray-400 p-2 rounded-xl"                                                 
                                                 src="/images/descargar.png" 
                                                 alt="download3" 
                                                 width={40}
-                                                height={40}/>
+                                                height={40}
+                                            />
                                         </Link>
                                     </div>
                                 </div>
@@ -168,7 +174,7 @@ const HomeRandomGallery = () =>{
                                     >
                                     <Link href={`/view/${image.id}`}>
                                         <Image
-                                            key={index}
+                                            key={index+1}
                                             src={image.urls.full_resolution} 
                                             alt="new photo" 
                                             width={450} 
@@ -199,11 +205,13 @@ const HomeRandomGallery = () =>{
                                     } w-full absolute flex text-white bg-gradient-to-r from-gray-900`}
                                 >
                                     <Image
+                                        key={index+2}
                                         className="p-2 w-16 rounded-full pointer-events-none"                                               
                                         src={image.user_profile.profile_image.large} 
                                         alt="profilepic" 
                                         width={60}
-                                        height={60}/>
+                                        height={60}
+                                    />
                                     <div className="w-3/4 pl-5 pt-2">
                                         <Link href={`/users/${image.user_profile.username}`}>    
                                             <h2 className="text-xl font-bold truncate hover:underline cursor-pointer">{image.user_profile.username}</h2>
@@ -213,11 +221,13 @@ const HomeRandomGallery = () =>{
                                     <div className="w-1/6 flex justify-center flex items-center select-none">
                                         <Link href={image.urls.download}>
                                             <Image
+                                                key={index+2}
                                                 className="bg-gray-300 hover:bg-gray-400 p-2 rounded-xl"                                                 
                                                 src="/images/descargar.png" 
                                                 alt="download3" 
                                                 width={40}
-                                                height={40}/>
+                                                height={40}
+                                            />
                                         </Link>
                                     </div>
                                 </div>
@@ -227,7 +237,7 @@ const HomeRandomGallery = () =>{
                                     >
                                     <Link href={`/view/${image.id}`}>
                                         <Image
-                                            key={index}
+                                            key={index+2}
                                             src={image.urls.full_resolution} 
                                             alt="new photo" 
                                             width={450} 
@@ -243,10 +253,17 @@ const HomeRandomGallery = () =>{
             <div className="m-10 mr-16 ml-16 flex justify-around bg-gradient-to-b from-gray-400 rounded-2xl">
                 <div className="m-10 w-1/2">
                     <div className="flex h-16 items-center select-none">
-                        <Image className="pointer-events-none select-none" width={100} height={100} src="/images/onlylogo.png" alt="logopng"/>
+                        <Image 
+                            className="pointer-events-none select-none" 
+                            width={100} 
+                            height={100} 
+                            src="/images/onlylogo.png" 
+                            alt="logopng"
+                        />
                         <p className="pl-5 text-3xl font-bold">PicsArt Gallery</p>
                     </div>
-                    <p className="text-xl mt-10 font-semibold">PicsArt Gallery es una aplicación web destinada a almacenar, descargar imágenes y videos libres de uso. 
+                    <p className="text-xl mt-10 font-semibold">
+                        PicsArt Gallery es una aplicación web destinada a almacenar, descargar imágenes y videos libres de uso. 
                         <br/><br/>¡Puedes registrarte o iniciar sesión para subir, descargar y gestionar 
                         tu material visual tanto de imagen como de video!
                     </p>
@@ -255,56 +272,57 @@ const HomeRandomGallery = () =>{
                 {slicedPhotos.lastpic.map((image : any, index: number)=>{
                     return(<>
                         <div
-                                key={index}
-                                className="relative group"
+                            key={index}
+                            className="relative group"
+                            onMouseEnter={() => setLastpicImg(index)}
+                            onMouseLeave={handleMouseLeave}
+                        >
+                            <div
                                 onMouseEnter={() => setLastpicImg(index)}
                                 onMouseLeave={handleMouseLeave}
+                                className={`${
+                                    lastpicImg === index ? "" : "invisible"
+                                } w-full absolute flex text-white bg-gradient-to-r from-gray-900`}
                             >
-                                <div
-                                    onMouseEnter={() => setLastpicImg(index)}
-                                    onMouseLeave={handleMouseLeave}
-                                    className={`${
-                                        lastpicImg === index ? "" : "invisible"
-                                    } w-full absolute flex text-white bg-gradient-to-r from-gray-900`}
-                                >
-                                    <Image
-                                        className="p-2 w-16 rounded-full pointer-events-none"                                               
-                                        src={image.user_profile.profile_image.large} 
-                                        alt="profilepic" 
-                                        width={60}
-                                        height={60}/>
-                                    <div className="w-3/4 pl-5 pt-2">
-                                        <Link href={`/users/${image.user_profile.username}`}>    
-                                            <h2 className="text-xl font-bold truncate hover:underline cursor-pointer">{image.user_profile.username}</h2>
-                                        </Link>
-                                        <p className="text-sm">Fecha de publicación: {image.uploaded_on.slice(0,10)}</p>
-                                    </div>
-                                    <div className="w-1/6 flex justify-center flex items-center select-none">
-                                        <Link href={image.urls.download}>
-                                            <Image
-                                                className="bg-gray-300 hover:bg-gray-400 p-2 rounded-xl"                                                 
-                                                src="/images/descargar.png" 
-                                                alt="download3" 
-                                                width={40}
-                                                height={40}/>
-                                        </Link>
-                                    </div>
+                                <Image
+                                    key={index+3}
+                                    className="p-2 w-16 rounded-full pointer-events-none"                                               
+                                    src={image.user_profile.profile_image.large} 
+                                    alt="profilepic" 
+                                    width={60}
+                                    height={60}/>
+                                <div className="w-3/4 pl-5 pt-2">
+                                    <Link href={`/users/${image.user_profile.username}`}>    
+                                        <h2 className="text-xl font-bold truncate hover:underline cursor-pointer">{image.user_profile.username}</h2>
+                                    </Link>
+                                    <p className="text-sm">Fecha de publicación: {image.uploaded_on.slice(0,10)}</p>
                                 </div>
-                                <div className="w-fit h-fit mb-10 shadow-2xl"
-                                    onMouseEnter={() => setLastpicImg(index)}
-                                    onMouseLeave={handleMouseLeave}
-                                    >
-                                    <Link href={`/view/${image.id}`}>
+                                <div className="w-1/6 flex justify-center flex items-center select-none">
+                                    <Link href={image.urls.download}>
                                         <Image
-                                            key={index}
-                                            src={image.urls.full_resolution} 
-                                            alt="new photo" 
-                                            width={450} 
-                                            height={500}
-                                        />
+                                            className="bg-gray-300 hover:bg-gray-400 p-2 rounded-xl"                                                 
+                                            src="/images/descargar.png" 
+                                            alt="download3" 
+                                            width={40}
+                                            height={40}/>
                                     </Link>
                                 </div>
                             </div>
+                            <div className="w-fit h-fit mb-10 shadow-2xl"
+                                onMouseEnter={() => setLastpicImg(index)}
+                                onMouseLeave={handleMouseLeave}
+                                >
+                                <Link href={`/view/${image.id}`}>
+                                    <Image
+                                        key={index}
+                                        src={image.urls.full_resolution} 
+                                        alt="new photo" 
+                                        width={450} 
+                                        height={500}
+                                    />
+                                </Link>
+                            </div>
+                        </div>
                     </>)
                 })}  
                 </div>

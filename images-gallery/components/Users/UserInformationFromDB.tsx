@@ -11,7 +11,6 @@ const UserInformationFromDB = ({userData} : any) => {
 
     const userPhotos = useAppSelector((state)=> state.storageReducer.userFromDBPhotos);
     const dispatch = useAppDispatch();
-    console.log(userPhotos);
     
     const [isClicked, setIsClicked] = useState("Fotos");
     const [visibleImageIndex, setVisibleImageIndex] = useState<number | null>(null);
@@ -99,12 +98,15 @@ const UserInformationFromDB = ({userData} : any) => {
                                             <p className="text-sm">Fecha de publicación: {photo.uploaded_on.slice(0,10)}</p>
                                         </div>
                                         <div className="w-1/6 flex justify-center flex items-center select-none">
-                                            <Image
-                                                className="bg-gray-300 hover:bg-gray-400 p-2 rounded-xl"                                                 
-                                                src="/images/descargar.png" 
-                                                alt="download3" 
-                                                width={40}
-                                                height={40}/>
+                                            <Link target="_blank" rel="noopener noreferrer" href={photo.image}>
+                                                <Image
+                                                    className="bg-gray-300 hover:bg-gray-400 p-2 rounded-xl"                                                 
+                                                    src="/images/descargar.png" 
+                                                    alt="download3" 
+                                                    width={40}
+                                                    height={40}
+                                                />
+                                            </Link>
                                         </div>
                                     </div>
                                     <div
