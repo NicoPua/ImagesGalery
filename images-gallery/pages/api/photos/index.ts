@@ -34,27 +34,31 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             "user",
             "_id name firstname lastname profilepic email"
           );
+
+          if(!userPhotos){
+            await dbDisconnect();
+            throw new Error("No se ha encontrado la imagen con esa userID.");
+          }
+
           return res.status(200).json(userPhotos) 
-        }
+        }else{         
+          const response = await axios.get(`https://api.unsplash.com/photos/?client_id=${UNSPLASH_ACCESS_KEY}`);
+          const cleanedAPIData : any = await cleanAPIData(response.data);
 
-        const response = await axios.get(`https://api.unsplash.com/photos/?client_id=${UNSPLASH_ACCESS_KEY}`);
-        const cleanedAPIData : any = await cleanAPIData(response.data);
-
-        const queryOptions: object = {      //Condiciones para filtrar documentos de la database 
-          hidden: { $ne: true }
-        };
-        const allPhotosDB = await Photo.find(queryOptions)
-        .populate(
-          "user",
-          "_id name firstname lastname profilepic email"
-        );
-        const allPhotos = [...cleanedAPIData, ...allPhotosDB];
-
-        if(allPhotos.length){
-          return res.status(200).json(allPhotos);
-        }else{
-          await dbDisconnect();
-          return res.status(200).json({ error: "Ha ocurrido un error"});
+          /* const queryOptions: object = {      //Condiciones para filtrar documentos de la database 
+            hidden: { $ne: true }
+          };
+          const allPhotosDB = await Photo.find(queryOptions)
+          .populate(
+            "user",
+            "_id name firstname lastname profilepic email"
+          ); */
+          if(cleanedAPIData.length){
+            return res.status(200).json(cleanedAPIData);
+          }else{
+            await dbDisconnect();
+            throw new Error("Ha ocurrido un error");
+          }
         }
       } catch (error : any) {
         await dbDisconnect();
@@ -64,19 +68,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     
     case "POST":
       try {
-        const { description, user, image, location, rating, likes, reviews } = body;
+        const { description, user, image, location, rating, likes, categories, reviews } = body;
 
         if(!description || !user || !image){
           throw new Error("Faltan datos por completar.");
         }
         
         const fechaActual = new Date;
-        const bodyData : BodyInformation = { description, uploaded_on: fechaActual, user, location, image, rating, likes, reviews }
+        const bodyData : BodyInformation = { description, uploaded_on: fechaActual, categories, user, location, image, rating, likes, reviews }
         const errorMsg: string = validationPostData(bodyData);
         if(errorMsg.length !== 0){
           throw new Error(errorMsg); 
         }
-        console.log(bodyData);
+        
         const newPhoto = new Photo(bodyData);
         const invalidPhoto = newPhoto.validateSync();
         if(invalidPhoto){
@@ -109,5 +113,6 @@ export interface BodyInformation{
   image: any,
   rating: number,
   likes: number,
+  categories: string[],
   reviews: string
 }
