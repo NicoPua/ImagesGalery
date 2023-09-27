@@ -1,7 +1,7 @@
 import { BodyInformation } from "@/pages/api/photos";
 import { errorInfo } from "@/aux-interfaces/auxLittleInterfaces";
 
-const validationPostData = ( { description, location, image } : BodyInformation ) =>{
+const validationPostData = ( { description, location, image, categories } : BodyInformation ) =>{
     const regexWithoutNumbers : RegExp = /^[^0-9]*$/;
     const regexOnlyLetters : RegExp = /^[a-zA-Z,.\s]+$/;
     const regexOnlyURL : RegExp = /^(ftp|http|https):\/\/[^ "]+$/
@@ -22,6 +22,10 @@ const validationPostData = ( { description, location, image } : BodyInformation 
         error.message = "La location debe contener sólo texto.";
     }else if(location.length <= 2 || location.length >= 50){
         error.message = "La location debe contener entre 2 a 50 caracteres.";
+    }
+
+    if(categories.length === 0){
+        error.message = "Debe haber al menos una categoría.";
     }
 
     return error.message;

@@ -1,8 +1,9 @@
-const validationNewPhoto = ({description, location} : FormDataInterface) => {
+const validationNewPhoto = ({description, location, categories} : FormDataInterface) => {
     const regexWithoutNumbers : RegExp = /^[^0-9]*$/;
     const regexOnlyLetters : RegExp = /^[a-zA-Z,.\s]+$/;
 
     const error = {
+        categories: "",
         description: "",  
         location: "",
         flag: false
@@ -31,6 +32,11 @@ const validationNewPhoto = ({description, location} : FormDataInterface) => {
         error.location = "- La location debe contener entre 2 a 50 caracteres.";
     }
 
+    if(categories.length === 0){
+        error.categories = "- Debe estar seleccionada al menos UNA categoría.";
+        error.flag = true;
+    }
+    
     return error;
 }
 
@@ -42,7 +48,8 @@ interface FormDataInterface{
     location: string, 
     image: string,
     rating: number, 
-    likes: number, 
+    likes: number,
+    categories: string, 
     reviews: string     //CAMBIAR EN UN FUTURO
 }
 
