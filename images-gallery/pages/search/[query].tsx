@@ -101,6 +101,59 @@ const SearchByName = () =>{
                         </> : <>
                             {currentGames.map((image : any, index: number)=>{
                                 return(
+                                (image._id)?<>
+                                    <div
+                                        key={index}
+                                        className="relative group m-1"
+                                        onMouseEnter={() => handleMouseEnter(index)}
+                                        onMouseLeave={handleMouseLeave}
+                                    >
+                                        <div
+                                            onMouseEnter={() => handleMouseEnter(index)}
+                                            onMouseLeave={handleMouseLeave}
+                                            className={`${
+                                                visibleImageIndex === index ? "" : "invisible"
+                                            } w-full absolute flex text-white bg-gradient-to-r from-gray-900`}
+                                        >
+                                            <Image
+                                                className="p-2 w-16 rounded-full pointer-events-none"                                               
+                                                src={image.user.profilepic} 
+                                                alt="profilepic" 
+                                                width={60}
+                                                height={60}/>
+                                            <div className="w-3/4 pl-5 pt-2">
+                                                <Link href={`/users/${image.user._id}`}>    
+                                                    <h2 className="text-xl font-bold truncate hover:underline cursor-pointer">{image.user.name}</h2>
+                                                </Link>
+                                                <p className="text-sm">Fecha de publicación: {image.uploaded_on.slice(0,10)}</p>
+                                            </div>
+                                            <div className="w-1/6 flex justify-center flex items-center select-none">
+                                                <Link href={image.image}>
+                                                    <Image
+                                                        className="bg-gray-300 hover:bg-gray-400 p-2 rounded-xl"                                                 
+                                                        src="/images/descargar.png" 
+                                                        alt="download3" 
+                                                        width={40}
+                                                        height={40}/>
+                                                </Link>
+                                            </div>
+                                        </div>
+                                        <div className="w-fit h-fit mb-10 shadow-2xl"
+                                            onMouseEnter={() => handleMouseEnter(index)}
+                                            onMouseLeave={handleMouseLeave}
+                                            >
+                                            <Link href={`/view/${image._id}`}>
+                                                <Image
+                                                    key={index}
+                                                    src={image.image} 
+                                                    alt="new photo" 
+                                                    width={400} 
+                                                    height={500}
+                                                />
+                                            </Link>
+                                        </div>
+                                    </div>
+                                </>:<>
                                     <div
                                         key={index}
                                         className="relative group m-1"
@@ -152,7 +205,7 @@ const SearchByName = () =>{
                                             </Link>
                                         </div>
                                     </div>
-                                )
+                                </>)
                             })}
                         </>
                         }
