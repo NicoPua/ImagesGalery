@@ -1,5 +1,6 @@
 import axios from "axios";
 import cleanAllSearchedDataPhotos from "./cleanAllSearchedDataPhotos";
+const Photo = require("../../models/Photo")
 
 const { UNSPLASH_ACCESS_KEY } = process.env;
 
@@ -17,7 +18,16 @@ const getAllSearchedPhotos = async (imgToSearch : any) => {
     const cleanedFourthPageData : any = await cleanAllSearchedDataPhotos([...fourthPage.results]);
     const cleanedFifthPageData : any = await cleanAllSearchedDataPhotos([...fifthPage.results]);
 
-    const allCleanedPhotos = [ ...cleanedFirstPageData, ...cleanedSecondPageData, ...cleanedThirdPageData, ...cleanedFourthPageData, ...cleanedFifthPageData ]
+
+    const allPhotosOnDB = await Photo.find({
+        categories: {$in: [imgToSearch] }
+    })
+    .populate(
+        "user",
+        "_id name firstname lastname profilepic email"
+    );
+
+    const allCleanedPhotos = [...allPhotosOnDB, ...cleanedFirstPageData, ...cleanedSecondPageData, ...cleanedThirdPageData, ...cleanedFourthPageData, ...cleanedFifthPageData ]
 
     return allCleanedPhotos;
 }

@@ -13,12 +13,14 @@ export default function UploadPhoto() {
   const loguedUser : any = useAppSelector((state) => state.storageReducer.loguedUser)
   const router = useRouter();
   const dispatch = useAppDispatch();
+  
   const [success, setSuccess] = useState(false);
   const [sure, setSure] = useState(false);
   const [loading, setLoading] = useState(false);
   const [imgPreview, setImgPreview] = useState("");
 
   const [check, setCheck] = useState(false);
+  const [disabledInputs, setDisabledInputs] = useState(false);
 
   const [state,setState] : any = useState({ 
     user: loguedUser? loguedUser._id : "",
@@ -28,21 +30,43 @@ export default function UploadPhoto() {
     file: null,
     rating: 0, 
     likes: 0, 
+    categories: [],
     reviews: "muchas reviews"
   });
 
   const [errors, setErrors] = useState({
     description: "",  
     location: "",
+    categories: "",
     flag: true
   })
 
-  const handleChange = (event: any) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     const prop = event.target.name;
 
     setState({...state, [prop]: value});
     setErrors(validationNewPhoto({...state, [prop]: value}))
+  }
+
+  const handleCategories = (event : React.ChangeEvent<HTMLInputElement>) => {
+    const isChecked = event.target.checked;
+    const value = event.target.value;
+
+    if(value === 'others' && isChecked){
+      setDisabledInputs(true);
+      setState({...state, categories: [ value ]});
+      setErrors(validationNewPhoto({...state, categories: [ value ]}));
+    }else{
+      setDisabledInputs(false);
+      if(isChecked){
+        setState({...state, categories: [...state.categories, value]});
+        setErrors(validationNewPhoto({...state, categories: [...state.categories, value]}));
+      }else{
+        setState({...state, categories: state.categories.filter((cat : string) => cat !== value )})
+        setErrors(validationNewPhoto({...state, categories: state.categories.filter((cat : string) => cat !== value )}));
+      }
+    }
   }
 
   const handleFileUpload = (event : any) => {
@@ -60,15 +84,19 @@ export default function UploadPhoto() {
   const handleSubmit = async (event : React.FormEvent<HTMLButtonElement>) =>{
     event.preventDefault();
     if(!errors.flag){
+      setLoading(true);
       const formData = new FormData;
       formData.append('file', state.file);
       formData.append('upload_preset', "picsart_gallery")
   
-      setLoading(true);
       const response = await dispatch(postPhotoOnCloudinary(formData));
-      setState({...state, image: response.secure_url})
-      await dispatch(postNewPhotoOnDB(state));
+      
+      if(response.secure_url){
+        await setState({...state, image: response.secure_url});
 
+        const newState = {...state, image: response.secure_url}
+        await dispatch(postNewPhotoOnDB(newState));
+      }  
       //FIN DE CARGA
       setSure(false);
       setLoading(false);
@@ -95,12 +123,59 @@ export default function UploadPhoto() {
           className='mt-20 mb-20 w-5/6 flex bg-gray-500 p-10 shadow-2xl rounded border-black border-double border-8 bg-opacity-40'
         >
           <div className='flex flex-col w-1/2'>
+            <h1 onClick={()=> console.log(state)} className="font-bold text-2xl mb-5">Upload a Photo</h1>
             <label className="block text-md font-medium text-gray-900 dark:text-white">Description</label>
             <Input className='my-2' value={state.description} name='description' onChange={handleChange} placeholder='Description' size='md' />
             {errors.description? <p className='text-red-600 mb-5'>{errors.description}</p> : <></>}
             <label className="block text-md font-medium text-gray-900 dark:text-white">Location</label>
             <Input className='my-2' value={state.location} name='location' onChange={handleChange} placeholder='Location' size='md' />
             {errors.location? <p className='text-red-600 mb-5'>{errors.location}</p> : <></>}
+            
+            <label className="block text-md font-medium text-gray-900 dark:text-white">Categories</label>
+            <div className="w-full h-24 mt-3 flex flex-col flex-wrap">
+              <div>
+                <input disabled={disabledInputs} type="checkbox" onChange={handleCategories} value="love"/>
+                <label className="pl-3">Love</label>
+              </div>
+              <div>
+                <input disabled={disabledInputs} type="checkbox" onChange={handleCategories} value="friends"/>
+                <label className="pl-3">Friends</label>
+              </div>
+              <div>
+                <input disabled={disabledInputs} type="checkbox" onChange={handleCategories} value="games"/>
+                <label className="pl-3">Games</label>
+              </div>
+              <div>
+                <input disabled={disabledInputs} type="checkbox" onChange={handleCategories} value="jobs"/>
+                <label className="pl-3">Jobs</label>
+              </div>
+              <div>
+                <input disabled={disabledInputs} type="checkbox" onChange={handleCategories} value="art"/>
+                <label className="pl-3">Art</label>
+              </div>
+              <div>
+                <input disabled={disabledInputs} type="checkbox" onChange={handleCategories} value="music"/>
+                <label className="pl-3">Music</label>
+              </div>
+              <div>
+                <input disabled={disabledInputs} type="checkbox" onChange={handleCategories} value="technology"/>
+                <label className="pl-3">Technology</label>
+              </div>
+              <div>
+                <input disabled={disabledInputs} type="checkbox" onChange={handleCategories} value="life"/>
+                <label className="pl-3">Life</label>
+              </div>
+              <div>
+                <input disabled={disabledInputs} type="checkbox" onChange={handleCategories} value="food"/>
+                <label className="pl-3">Food</label>
+              </div>
+              <div>
+                <input type="checkbox" onChange={handleCategories} value="others"/>
+                <label className="pl-3">Others</label>
+              </div>
+            </div>
+            {errors.categories? <p className='text-red-600 mb-5'>{errors.categories}</p> : <></>}
+            
             <div className='w-full mt-3'>
               <label className="block mb-2 text-md font-medium text-gray-900 dark:text-white">Upload file</label>
               <input onChange={handleFileUpload} className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" type="file"/>

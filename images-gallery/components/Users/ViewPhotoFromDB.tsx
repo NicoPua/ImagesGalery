@@ -34,8 +34,16 @@ const ViewPhotoFromDb = ({photoByID} : any) => {
             </div>     
             <div className="bg-gray-300 mb-10 mr-10 ml-10 p-10 flex flex-col items-center shadow-2xl">                 
                 <Image width={700} height={720} src={`${photoByID.image}`} alt="full_resolution_image"/>
-                <div className="w-full mt-10 mb-10 flex justify-start">
-                    <p className="font-bold">Description:&nbsp;&nbsp;</p><p>{photoByID.description}</p> 
+                <div className="w-full mt-10 mb-10 flex flex-col items-start">
+                    <div className="flex mb-5">
+                        <p className="font-bold">Description:&nbsp;&nbsp;</p><p>{photoByID.description}</p> 
+                    </div>
+                    <div className="flex">
+                        <p className="font-bold">Categories:</p>
+                        {photoByID.categories.map((cat : string)=>{
+                            return <p className="px-3 font-semibold">{cat[0].toUpperCase() + cat.substring(1)}</p>
+                        })}
+                    </div>
                 </div>      
                 <div className="flex">
                     <p className="font-bold text-xl">Location:&nbsp;&nbsp;</p>

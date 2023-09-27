@@ -35,6 +35,11 @@ var photoSchema = new Schema(
       type: String,
       default: "No hay reviews."
     },
+    categories: [
+      {
+        type: String,
+      }
+    ],
     hidden: { 
       type: Boolean,
       default: false
