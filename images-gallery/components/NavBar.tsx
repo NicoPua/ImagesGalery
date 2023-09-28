@@ -77,8 +77,8 @@ const NavBar = () =>{
             </div>
             {user?<>
                 <div onClick={showOptions} className="cursor-pointer flex justify-around items-center w-40">
-                    <Image width={40} height={100} src={user.image!} alt="userpic" className="rounded"/>
-                    <p className="text-sm font-semibold">{user.name}</p>
+                    <Image width={40} height={100} src={loguedUser.profilepic} alt="userpic" className="rounded"/>
+                    <p className="text-sm font-semibold">{loguedUser.name}</p>
                     
                     {isClicked?<>
                         <Image width={20} height={20} src="/images/ArrowUp.png" alt="UpArrow"/>

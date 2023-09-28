@@ -67,9 +67,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       try {
         let { name, firstname, lastname, password, email, birthdate, profilepic, googleLogin} = body;
 
+        const existingUser = await User.findOne({email})
+        if(existingUser){
+          return res.status(200).json({ success: false, msg: "El E-mail ingresado se encuentra en uso."})
+        }
+
         //Pass
         const { encryptedPassword, newSalt} : any = await encryptPass(password);
-
         const passwordMatch : Promise<boolean> = await verifyPassword(
           password, 
           encryptedPassword, 
@@ -82,8 +86,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
         let validatorEncode = newSalt.toString("base64");
         let validator = encodeURIComponent(validatorEncode);
-
         //------------------
+        const today = new Date();
         const bodyInfo : userData = { 
           name, 
           firstname, 
@@ -92,29 +96,34 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           email,
           birthdate,
           salt: newSalt,
+          created_at: today.toString().slice(0,10),
+          updated_on: today.toString().slice(0,10),
           validator: validator,
+          social: {
+            instagram: "",
+            twitter: "",
+            portfolio: ""
+          },
           profilepic: (profilepic && profilepic !== "")? profilepic : "https://res.cloudinary.com/dacl2du1v/image/upload/v1684330929/userAvt_tkcm8u.png",
           active: googleLogin? true : false,
         };
-
-        const existingUser = await User.findOne({email})
-        if(existingUser){
-          return res.status(200).json({ success: false, msg: "El E-mail ingresado se encuentra en uso."})
+       
+        if(!googleLogin){
+          const options : object = mailOptions(email)  //CAMBIAR POR 'email' cuando esté listo.
+          await transporter.sendMail({
+            ...options,
+            subject: `${firstname} ${lastname} (${name})`,
+            text: "PicsArt Register",
+            html: sendedEmail(validator, email, APP_URL)
+          });
         }
-        
-        const options : object = mailOptions(email)  //CAMBIAR POR 'email' cuando esté listo.
-        await transporter.sendMail({
-          ...options,
-          subject: `${firstname} ${lastname} (${name})`,
-          text: "PicsArt Register",
-          html: sendedEmail(validator, email, APP_URL)
-        });
 
         const newUser = new User(bodyInfo);
-        console.log(newUser)
         const errorData: string = validationUserData(bodyInfo);
         if(errorData.length !== 0) throw new Error(errorData);
-
+        console.log(bodyInfo);
+        console.log(newUser);
+        
         const validationUser = newUser.validateSync();
         if(validationUser){
           await dbDisconnect();
@@ -145,8 +154,17 @@ export interface userData{
   password: string,
   email: string, 
   birthdate: string,
+  social: SocialInterface,
+  created_at: string,
+  updated_on: string,
   salt: string,
   validator: string,
   profilepic?: string,
   active?: boolean
+}
+
+interface SocialInterface{
+  instagram: string | undefined,
+  twitter: string | undefined,
+  portfolio: string | undefined
 }

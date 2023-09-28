@@ -41,7 +41,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const userFounded = await User.findById(id);
             if(!userFounded) throw new Error("No se han encontrado usuarios con esta ID.");
             
-            const { name, firstname, lastname, email, birthdate, password } = body;
+            const { name, firstname, lastname, email, birthdate, password, profilepic, instagram, twitter, portfolio } = body;
 
             if(password){
                 const { encryptedPassword, newSalt} : any = await encryptPass(password);
@@ -51,13 +51,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     await dbDisconnect();
                     throw new Error("Ocurrió un error con la contraseña.")
                 }
-
+                const today = new Date();
                 const bodyInfo: any = { 
                     firstname: firstname? firstname : userFounded.firstname, 
                     lastname: lastname? lastname : userFounded.lastname, 
                     email: email? email : userFounded.email, 
                     birthdate: birthdate? birthdate : userFounded.birthdate, 
+                    profilepic: profilepic? profilepic : userFounded.profilepic,
                     name: name? name : userFounded.name, 
+                    social: {
+                        instagram: instagram? instagram : userFounded.social.instagram,
+                        twitter: twitter? instagram : userFounded.social.twitter,
+                        portfolio: portfolio? instagram : userFounded.social.portfolio
+                    },
+                    updated_on: today,
                     password: password? encryptedPassword : userFounded.password, 
                     salt: password? newSalt : userFounded.salt
                 };
@@ -73,7 +80,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 );
     
                 if (updatedUser.acknowledged){
-                    await dbDisconnect();
                     return res.status(200).json({
                         success: true,
                         msg: "Los datos se actualizaron con éxito!",
@@ -85,12 +91,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     error: "No se pudo completar la petición, intentelo más tarde.",
                 });
             }else{
+                const today = new Date();
                 const bodyInfo: any = { 
                     firstname: firstname? firstname : userFounded.firstname, 
                     lastname: lastname? lastname : userFounded.lastname, 
                     email: email? email : userFounded.email, 
                     birthdate: birthdate? birthdate : userFounded.birthdate, 
-                    name: name? name : userFounded.name
+                    updated_on: today.toString(),
+                    name: name? name : userFounded.name,
+                    profilepic: profilepic? profilepic : userFounded.profilepic,
+                    social: {
+                        instagram: instagram? `https://www.instagram.com/${instagram}` : userFounded.social.instagram,
+                        twitter: twitter? `https://www.twitter.com/${twitter}` : userFounded.social.twitter,
+                        portfolio: portfolio? portfolio : userFounded.social.portfolio
+                    }
                 };
 
                 const errorMsg : string = validationUserData(bodyInfo);

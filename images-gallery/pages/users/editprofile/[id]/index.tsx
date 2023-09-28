@@ -1,29 +1,41 @@
 import validationPutUserData from "@/aux-functions/validations/validationPutUserData";
 import Layout from "@/components/Layout";
 import { Loading } from "@/components/Loading/loading";
-import { getLoguedUserInfo, putUserProfile } from "@/utils/redux/actions";
+import { getLoguedUserInfo, postPhotoOnCloudinary, putUserProfile } from "@/utils/redux/actions";
 import { useAppDispatch, useAppSelector } from "@/utils/redux/hooks";
 import { Input } from "@chakra-ui/react";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react"
-import { FcApproval } from "react-icons/fc";
-import { FcPicture } from "react-icons/fc";
+import { FcApproval,FcPicture } from "react-icons/fc";
+import { ImGoogle2 } from "react-icons/im";
 
 const EditProfile = () => {
+    const { data } = useSession();
+    const user : any = data?.user;  //INFO DE LA SESSION (GOOGLE)
     const loguedUser : any = useAppSelector((state)=> state.storageReducer.loguedUser);
+    
     const router = useRouter();
     const dispatch = useAppDispatch()
 
     const [success, setSuccess] = useState(false);
     const [sure, setSure] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [previewPhoto, setPreviewPhoto] = useState(false);
+    const [imgPreview,setImgPreview] = useState("")
+
     const [formData, setFormData] = useState({
         name: loguedUser.name,
         firstname: loguedUser.firstname,
         lastname: loguedUser.lastname,
         email: loguedUser.email,
         birthdate: loguedUser.birthdate,
+        profilepic: "",
+        file: null,
+        instagram: "",
+        twitter: "",
+        portfolio: "",
         password: "",
         re_password: ""
     });
@@ -34,8 +46,12 @@ const EditProfile = () => {
         lastname: "",
         email: "",
         birthdate: "",
+        instagram: "",
+        twitter: "",
+        portfolio: "",
         password: "",
         re_password: "",
+        image: true,
         flag: true,
         allEqual: true
     });
@@ -43,18 +59,61 @@ const EditProfile = () => {
     const handleChange = async (event : React.ChangeEvent<HTMLInputElement>) =>{
         const prop = event.target.name;
         const value = event.target.value;
-        
+
         setFormData({...formData, [prop]: value});
         const errorObject : any = await validationPutUserData({...formData, [prop]: value}, loguedUser);
         setErrors(errorObject);
     }
+
+    const useGoogleImage = () => {
+        setPreviewPhoto(true);
+        setImgPreview(user.image);
+        if(loguedUser.profilepic !== user.image){
+            setFormData({...formData, profilepic: user.image, file: null});
+            setErrors({...errors, image: false});
+        }else{
+            setErrors({...errors, image: true});
+        }
+    }
+
+    const handleFileUpload = (event : any) => {      
+        const fileToUpload = event.target.files[0];
+        if(fileToUpload){
+            setPreviewPhoto(true);
+            const imageUrl = URL.createObjectURL(fileToUpload);
+            setFormData({...formData, file: fileToUpload});
+            setErrors({...errors, image: false});
+            setImgPreview(imageUrl);
+        }else{
+            setPreviewPhoto(false);
+            setFormData({...formData, file: null});
+            setErrors({...errors, image: true});        
+            setImgPreview("");
+        }
+      }
 
     const handleSubmit = async () =>{
         if(errors.flag){
             alert("Ha ocurrido un error.")
         }else{
             setLoading(true);
-            await dispatch(putUserProfile(loguedUser._id ,formData));
+
+            if(formData.file && imgPreview){
+                const formImage : any = new FormData;
+                formImage.append('file', formData.file);
+                formImage.append('upload_preset', "picsart_gallery")
+            
+                const response = await dispatch(postPhotoOnCloudinary(formImage));
+
+                if(response.secure_url){
+                    setFormData({...formData, profilepic: response.secure_url});
+                    const newFormData = {...formData, profilepic: response.secure_url}
+                    await dispatch(putUserProfile(loguedUser._id , newFormData));
+                } 
+            } 
+            else{
+                await dispatch(putUserProfile(loguedUser._id ,formData));
+            }
             setSure(false);
             setLoading(false);
             setSuccess(true);
@@ -71,17 +130,31 @@ const EditProfile = () => {
 
     return (
         <Layout title="Edit Profile | PicsArt Gallery" description="User can edit our profile.">
-            <div className="w-full h-screen flex flex-col justify-center items-center mb-10">
-                <p className="mb-5 mt-20 font-bold text-2xl" onClick={()=> console.log(loguedUser)}>Edit My Profile</p>
+            <div className="w-full h-screen flex flex-col justify-center items-center mb-20">
+                <p className="mb-5 mt-20 font-bold text-2xl" onClick={()=> console.log(formData)}>Edit My Profile</p>
                 <div className="flex flex-col w-3/4 bg-gray-300 p-5 shadow-2xl rounded-2xl">
                     <div className="w-full flex flex-col">
                         <div className="flex justify-around w-full">
                             <div className="flex flex-col items-center justify-center bg-gray-800 px-5 rounded-2xl">
                                 <div className="flex justify-center items-center mb-5">
                                     <FcPicture />
-                                    <label className="pl-5 text-md font-bold text-white dark:text-white">Profile Photo</label>
+                                    <label className="pl-5 text-md font-bold text-white dark:text-white"  onClick={()=> console.log(errors)}>Profile Photo</label>
                                 </div>
-                                <Image className="rounded-2xl pointer-events-none select-none" width={150} height={1000} src={loguedUser.profilepic} alt="profilepic"/>
+                                {previewPhoto
+                                ?   <Image className="rounded-2xl pointer-events-none select-none" src={imgPreview} width={150} height={1000} alt='ImagePreview' />
+                                :   <Image className="rounded-2xl pointer-events-none select-none" width={150} height={1000} src={loguedUser.profilepic} alt="profilepic"/>
+                                }                              
+                                <div 
+                                    className="flex items-center bg-gray-500 mt-3 text-white px-3 rounded-xl transition-all ease-in-out hover:scale-105"
+                                    onClick={useGoogleImage} 
+                                >
+                                    <ImGoogle2 />
+                                    <button className="pl-3">Use Google Image</button>
+                                </div>
+                                <div className='w-full my-3'>
+                                    <input onChange={handleFileUpload} className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400" type="file"/>
+                                    <p className="mt-1 text-sm text-gray-500 dark:text-gray-300">SVG, PNG, JPG or JPEG.</p>
+                                </div>
                             </div>
                             <div className="mb-5 flex flex-col h-fit">
                                 <label className="block text-md font-medium text-gray-900 dark:text-white">Username: {loguedUser.name}</label>           
@@ -123,10 +196,50 @@ const EditProfile = () => {
                                     : <></>}
                                 </div>
                             </div>
+                            <div>
+                                <label className="block text-md font-medium text-gray-900 dark:text-white">Portfolio: </label>           
+                                <div className="mb-5 flex flex-col h-fit">
+                                    <div className="flex items-center">
+                                        <Image className="mr-2 h-full pointer-events-none select-none" width={20} height={20} src="/images/portfolio.png" alt="Portfolio icon"/>
+                                        <Input name='portfolio' value={formData.portfolio} onChange={handleChange} placeholder='Website' size='sm' />
+                                    </div>
+                                    {errors.portfolio? 
+                                        <div className="pl-8">
+                                            <p className="text-xs text-red-600">{errors.portfolio}</p> 
+                                        </div>
+                                    : <></>}
+                                </div>
+
+                                <label className="block text-md font-medium text-gray-900 dark:text-white">Instagram: </label>           
+                                <div className="mb-5 flex flex-col h-fit">
+                                    <div className="flex items-center">
+                                        <Image className="mr-2 h-full pointer-events-none select-none" width={20} height={20} src="/images/instagram.png" alt="Instagram icon"/>
+                                        <Input name='instagram' value={formData.instagram} onChange={handleChange} placeholder='Instagram' size='sm' />
+                                    </div>
+                                    {errors.instagram? 
+                                        <div className="pl-8">
+                                            <p className="text-xs text-red-600">{errors.instagram}</p> 
+                                        </div>
+                                    : <></>}
+                                </div>
+
+                                <label className="block text-md font-medium text-gray-900 dark:text-white">Twitter: </label>           
+                                <div className="mb-5 flex flex-col h-fit">
+                                    <div className="flex items-center">
+                                        <Image className="mr-2 h-full pointer-events-none select-none" width={20} height={20} src="/images/twitter.png" alt="Twitter icon"/>
+                                        <Input name='twitter' value={formData.twitter} onChange={handleChange} placeholder='Twitter' size='sm' />
+                                    </div>
+                                    {errors.twitter? 
+                                        <div className="pl-8">
+                                            <p className="text-xs text-red-600">{errors.twitter}</p> 
+                                        </div>
+                                    : <></>}
+                                </div>
+                            </div>
                         </div>  
                         <div className="flex justify-around mt-5">
                             <div className="w-1/3 flex flex-col">
-                                <label onClick={()=> console.log(errors)} className="block text-md font-medium text-gray-900 dark:text-white">E-mail: {loguedUser.email}</label>
+                                <label className="block text-md font-medium text-gray-900 dark:text-white">E-mail: {loguedUser.email}</label>
                                 <div className="mb-5 flex flex-col h-fit">
                                     <div className="flex items-center">
                                         <Image className="mr-2 pointer-events-none select-none" width={20} height={20} src="/images/email.png" alt="email icon"/>
@@ -182,14 +295,14 @@ const EditProfile = () => {
                                         </div>
                                     : <></>}
                                 </div>
-
-
-                                {errors.flag || errors.allEqual
-                                ? <button disabled className="mt-10 h-10 text-sm font-bold w-full bg-gray-700 rounded transition-all ease-in-out">Guardar</button>
-                                : <button onClick={() => setSure(true)} className="mt-10 h-10 text-sm font-bold w-full bg-gray-400 rounded hover:bg-green-400 transition-all ease-in-out">Guardar</button>
-                                }
                             </div>   
                         </div>                     
+                    </div>
+                    <div className="w-full flex justify-center">
+                        {(errors.flag || errors.allEqual) && errors.image
+                        ? <button disabled className="w-1/2 mt-10 h-10 text-sm font-bold bg-gray-700 rounded transition-all ease-in-out">Datos sin actualizar</button>
+                        : <button onClick={() => setSure(true)} className="w-1/2 mt-10 h-10 text-sm font-bold bg-gray-400 rounded hover:bg-green-400 transition-all ease-in-out">Guardar Datos</button>
+                        }
                     </div>
                 </div>
             </div>

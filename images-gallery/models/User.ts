@@ -8,11 +8,20 @@ interface UserDocument extends Document {
     email: string,
     profilepic: string,
     birthdate: Date,
+    social: SocialInterface,
+    created_at: Date,
+    updated_on: Date,
     salt: string,
     validator: string,
     active: boolean,
     deleted: boolean,
-  }
+}
+
+interface SocialInterface{
+    instagram: string,
+    twitter: string,
+    portfolio: string
+}
 
 const userSchema = new Schema<UserDocument>(
     {
@@ -47,6 +56,29 @@ const userSchema = new Schema<UserDocument>(
         birthdate: {
             type: Date,
             required: [true, "La fecha de nacimiento es requerida"],
+        },
+        social: {
+            instagram: {
+                type: String,
+                default: "",
+                trim: true
+            },
+            twitter: {
+                type: String,
+                default: "",
+                trim: true
+            },
+            portfolio: {
+                type: String,
+                default: "",
+                trim: true
+            }
+        },
+        created_at: {
+            type: Date
+        },
+        updated_on: {
+            type: Date
         },
         salt: {
             type: String,

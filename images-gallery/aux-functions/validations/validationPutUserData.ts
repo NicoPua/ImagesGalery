@@ -1,11 +1,12 @@
 import { verifyPassword } from "@/utils/lib/lib";
 
-const validationPutUserData = async ({ name, firstname, lastname, password, re_password, email, birthdate} : any, loguedUserData : any) =>{
+const validationPutUserData = async ({ name, firstname, lastname, password, re_password, email, birthdate, instagram, twitter, portfolio} : any, loguedUserData : any) =>{
     
     const onlyLettersAndNumbers = /^[a-zA-Z0-9]+$/;
     const onlyLetters = /^[a-zA-Z]+$/;
     const onlyEmails = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
+    const onlyHTTP = /^(ftp|http|https):\/\/[^ "]+$/
+    const noSpaces = /^[^\s]+$/
     const errors = {
         name: "",
         password: "",
@@ -14,6 +15,9 @@ const validationPutUserData = async ({ name, firstname, lastname, password, re_p
         lastname: "",
         email: "",
         birthdate: "",
+        instagram: "",
+        twitter: "",
+        portfolio: "",
         flag: false,
         allEqual: false
     }
@@ -53,6 +57,33 @@ const validationPutUserData = async ({ name, firstname, lastname, password, re_p
             errors.flag = true;
         }else if(lastname.length < 2 || lastname.length > 20){
             errors.lastname = "- Debe tener entre 2 & 20 caracteres.";
+            errors.flag = true;
+        }
+    }
+
+    if(instagram){
+        if(onlyHTTP.test(instagram)){
+            errors.instagram = "- Sólo debe ingresar nombre de usuario.";
+            errors.flag = true;
+        }else if(!noSpaces.test(instagram)){
+            errors.instagram = "- No debe haber espacios.";
+            errors.flag = true;
+        }
+    }
+
+    if(twitter){
+        if(onlyHTTP.test(twitter)){
+            errors.twitter = "- Sólo debe ingresar nombre de usuario.";
+            errors.flag = true;
+        }else if(!noSpaces.test(twitter)){
+            errors.twitter = "- No debe haber espacios.";
+            errors.flag = true;
+        }
+    }
+
+    if(portfolio){
+        if(!onlyHTTP.test(portfolio)){
+            errors.portfolio = "- Debe ingresar la URL en formato HTTP.";
             errors.flag = true;
         }
     }
