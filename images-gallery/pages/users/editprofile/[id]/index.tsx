@@ -82,43 +82,39 @@ const EditProfile = () => {
             setPreviewPhoto(true);
             const imageUrl = URL.createObjectURL(fileToUpload);
             setFormData({...formData, file: fileToUpload});
-            setErrors({...errors, image: false});
+            setErrors({...errors, image: false, flag: false});
             setImgPreview(imageUrl);
         }else{
             setPreviewPhoto(false);
             setFormData({...formData, file: null});
-            setErrors({...errors, image: true});        
+            setErrors({...errors, image: true, flag: true});        
             setImgPreview("");
         }
       }
 
     const handleSubmit = async () =>{
-        if(errors.flag){
-            alert("Ha ocurrido un error.")
-        }else{
-            setLoading(true);
+        setLoading(true);
 
-            if(formData.file && imgPreview){
-                const formImage : any = new FormData;
-                formImage.append('file', formData.file);
-                formImage.append('upload_preset', "picsart_gallery")
-            
-                const response = await dispatch(postPhotoOnCloudinary(formImage));
+        if(formData.file && imgPreview){
+            const formImage : any = new FormData;
+            formImage.append('file', formData.file);
+            formImage.append('upload_preset', "picsart_gallery")
+        
+            const response = await dispatch(postPhotoOnCloudinary(formImage));
 
-                if(response.secure_url){
-                    setFormData({...formData, profilepic: response.secure_url});
-                    const newFormData = {...formData, profilepic: response.secure_url}
-                    await dispatch(putUserProfile(loguedUser._id , newFormData));
-                } 
+            if(response.secure_url){
+                setFormData({...formData, profilepic: response.secure_url});
+                const newFormData = {...formData, profilepic: response.secure_url}
+                await dispatch(putUserProfile(loguedUser._id , newFormData));
             } 
-            else{
-                await dispatch(putUserProfile(loguedUser._id ,formData));
-            }
-            setSure(false);
-            setLoading(false);
-            setSuccess(true);
-            setErrors({...errors, allEqual: true})
+        } 
+        else{
+            await dispatch(putUserProfile(loguedUser._id ,formData));
         }
+        setSure(false);
+        setLoading(false);
+        setSuccess(true);
+        setErrors({...errors, allEqual: true})   
     }
    
     useEffect(()=>{       
