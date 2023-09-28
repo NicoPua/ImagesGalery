@@ -46,10 +46,50 @@ const UserInformationFromDB = ({userData} : any) => {
                     <h1>Bio: {userData.bio? userData.bio : "Sin descripción."}</h1>
                 </div>
                 <div className="flex flex-col justify-around">
-                    <h1>Photos: 0</h1>
-                    <h1>Latest update: Sin especificar.</h1>
+                    <h1>Photos: {userPhotos.length? userPhotos.length : 0}</h1>
+                    <h1 onClick={()=> console.log(userData)}>Latest update: {userData.updated_on.slice(0,10)}</h1>
+                    <h1>Created at: {userData.created_at.slice(0,10)}</h1>
                 </div>
+                <div className="bg-white p-2 flex flex-col justify-around items-center rounded shadow-2xl">
+                    {userData.social.portfolio?  
+                    <Link href={`${userData.social.portfolio}`}
+                        target="_blank" rel="noopener noreferrer">
+                        <Image 
+                            className="transition-all ease-out duration-300 transform hover:scale-125"
+                            width={30} 
+                            height={40} 
+                            src="/images/portfolio.png" 
+                            alt="personal page"
+                        />
+                    </Link>
+                    :<></>}
 
+                    {userData.social.instagram? 
+                    <Link href={`${userData.social.instagram}`}
+                        target="_blank" rel="noopener noreferrer">
+                        <Image
+                            className="transition-all ease-out duration-300 transform hover:scale-125"
+                            width={30} 
+                            height={40} 
+                            src="/images/instagram.png" 
+                            alt="porfolio" 
+                        />
+                    </Link>
+                    :<></>}
+
+                    {userData.social.twitter?
+                    <Link href={userData.social.twitter}
+                        target="_blank" rel="noopener noreferrer">
+                        <Image 
+                            className="transition-all ease-out duration-300 transform hover:scale-125"
+                            width={30} 
+                            height={40} 
+                            src="/images/twitter.png" 
+                            alt="instagram"
+                        />
+                    </Link>
+                    :<></>}
+                </div>
             </div>
             <div className="pl-10 w-1/4 h-12 flex justify-around items-center">
                 <option 
